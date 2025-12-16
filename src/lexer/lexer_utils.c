@@ -6,13 +6,13 @@
 /*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 11:48:32 by fabialme          #+#    #+#             */
-/*   Updated: 2025/12/15 15:22:45 by fabialme         ###   ########.fr       */
+/*   Updated: 2025/12/16 16:05:33 by bolegari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	*lexer_syntax_error(t_token *token, t_shell *sh)
+void	lexer_syntax_error(t_token *token, t_shell *sh)
 {
 	if (token)
 	{
@@ -21,7 +21,6 @@ void	*lexer_syntax_error(t_token *token, t_shell *sh)
 	}
 	ft_putstr_fd("Syntax error\n", 2);
 	sh->exit_status = 2;
-	return (NULL);
 }
 
 bool	check_syntax(const char *str)
@@ -54,7 +53,10 @@ t_token	*ft_tokenize(const char *str, t_shell *sh)
 
 	tokens = NULL;
 	if (!check_syntax(str))
-		return (lexer_syntax_error(tokens, sh));
+	{
+		lexer_syntax_error(tokens, sh);
+		return (NULL);
+	}
 	tokens = ft_strtok(str, sh);
 	if (!tokens)
 		return (NULL);

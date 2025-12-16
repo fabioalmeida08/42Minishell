@@ -6,7 +6,7 @@
 /*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 10:47:12 by fabialme          #+#    #+#             */
-/*   Updated: 2025/12/16 14:40:28 by bolegari         ###   ########.fr       */
+/*   Updated: 2025/12/16 16:06:30 by bolegari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ void	non_interactive_mode(void);
 
 //LEXER/TOKEN
 t_token	*ft_tokenize(const char *str, t_shell *sh);
-void	*lexer_syntax_error(t_token *token, t_shell *sh);
+void	lexer_syntax_error(t_token *token, t_shell *sh);
 t_token	*create_token(t_token_type type, char *value);
 void	add_token_back(t_token **head, t_token *new_token);
 void	ft_free_tokens(t_token *tokens);

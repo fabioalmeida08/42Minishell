@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strtok.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fabialme <fabialme@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 15:17:56 by fabialme          #+#    #+#             */
-/*   Updated: 2025/12/15 15:22:17 by fabialme         ###   ########.fr       */
+/*   Updated: 2025/12/16 16:08:39 by bolegari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,10 @@ static int	process_operator(const char **str, t_token **tokens, t_shell *sh)
 
 	token = handle_operator(str);
 	if (!token)
-		return (lexer_syntax_error(*tokens, sh), 0);
+	{
+		lexer_syntax_error(*tokens, sh);
+		return (0);
+	}
 	add_token_back(tokens, token);
 	return (1);
 }
@@ -41,7 +44,8 @@ static int	process_word(const char **str, t_token **tokens, t_shell *sh)
 	if (!token)
 	{
 		free(word);
-		return (lexer_syntax_error(*tokens, sh), 0);
+		lexer_syntax_error(*tokens, sh);
+		return (0);
 	}
 	add_token_back(tokens, token);
 	return (1);
@@ -53,7 +57,10 @@ t_token	*ft_strtok(const char *str, t_shell *sh)
 
 	tokens = NULL;
 	if (!str || !check_syntax(str))
-		return (lexer_syntax_error(tokens, sh));
+	{
+		lexer_syntax_error(tokens, sh);
+		return (NULL);
+	}
 	while (*str)
 	{
 		skip_whitespace(&str);

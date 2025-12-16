@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_op.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fabialme <fabialme@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 15:12:56 by fabialme          #+#    #+#             */
-/*   Updated: 2025/12/15 15:13:35 by fabialme         ###   ########.fr       */
+/*   Updated: 2025/12/16 16:21:54 by bolegari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ t_token	*handle_operator(const char **str)
 	t_token_type	type;
 	size_t			len;
 	char			*value;
+	t_token			*res;
 
 	if (is_invalid_operator_input(str))
 		return (NULL);
@@ -57,5 +58,6 @@ t_token	*handle_operator(const char **str)
 	if (!value)
 		return (NULL);
 	*str += len;
-	return (create_token(type, value));
+	res = create_token(type, value);
+	return (res);
 }
