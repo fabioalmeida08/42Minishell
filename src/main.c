@@ -6,7 +6,7 @@
 /*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 16:10:15 by bolegari          #+#    #+#             */
-/*   Updated: 2025/11/28 14:43:36 by fabialme         ###   ########.fr       */
+/*   Updated: 2025/12/16 15:03:02 by bolegari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,6 @@ int	main(int argc, char *argv[], char *envp[])
 		interactive_mode(&sh);
 	}
 	else
-		non_interactive_mode();
+		non_interactive_mode(); 
 	return (0);
 }
