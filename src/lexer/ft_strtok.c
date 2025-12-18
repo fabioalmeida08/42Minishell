@@ -6,7 +6,7 @@
 /*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 15:17:56 by fabialme          #+#    #+#             */
-/*   Updated: 2025/12/16 16:08:39 by bolegari         ###   ########.fr       */
+/*   Updated: 2025/12/18 14:20:53 by bolegari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,17 +56,13 @@ t_token	*ft_strtok(const char *str, t_shell *sh)
 	t_token	*tokens;
 
 	tokens = NULL;
-	if (!str || !check_syntax(str))
-	{
-		lexer_syntax_error(tokens, sh);
-		return (NULL);
-	}
 	while (*str)
 	{
 		skip_whitespace(&str);
 		if (*str == '\0')
 			break ;
-		if (*str == '|' || *str == '<' || *str == '>')
+		if (*str == '|' || *str == '<' || *str == '>' || *str == '&'
+			|| *str == '(' || *str == ')')
 		{
 			if (!process_operator(&str, &tokens, sh))
 				return (NULL);

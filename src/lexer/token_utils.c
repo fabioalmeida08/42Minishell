@@ -6,7 +6,7 @@
 /*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 14:29:42 by fabialme          #+#    #+#             */
-/*   Updated: 2025/12/11 16:18:56 by bolegari         ###   ########.fr       */
+/*   Updated: 2025/12/18 14:27:53 by bolegari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@ t_token	*create_token(t_token_type type, char *value)
 {
 	t_token	*token;
 
-	if (!value)
-		return (NULL);
 	token = ft_calloc(1, sizeof(t_token));
 	if (!token)
 		return (NULL);
@@ -61,7 +59,7 @@ void	ft_free_tokens(t_token *tokens)
 void	print_tokens(t_token *tokens)
 {
 	t_token	*current;
-
+	
 	current = tokens;
 	if (!tokens)
 	{
@@ -73,28 +71,40 @@ void	print_tokens(t_token *tokens)
 		printf("[");
 		switch (current->type)
 		{
-			case TK_WORD:
+			case TK_WORD :
 				printf("WORD");
 				break ;
-			case TK_PIPE:
+			case TK_PIPE :
 				printf("PIPE");
 				break ;
-			case TK_REDIR_IN:
+			case TK_REDIR_IN :
 				printf("REDIR_IN");
 				break ;
-			case TK_REDIR_OUT:
+			case TK_REDIR_OUT :
 				printf("REDIR_OUT");
 				break ;
-			case TK_REDIR_APPEND:
+			case TK_REDIR_APPEND :
 				printf("REDIR_APPEND");
 				break ;
-			case TK_REDIR_HEREDOC:
+			case TK_REDIR_HEREDOC :
 				printf("HEREDOC");
 				break ;
-			default:
+			case TK_OR :
+				printf("OR");
+				break ;
+			case TK_AND :
+				printf("AND");
+				break ;
+			case TK_PAREN_OPEN :
+				printf("PAREN_OPEN");
+				break ;
+			case TK_PAREN_CLOSE :
+				printf("PAREN_CLOSE");
+				break ;
+			default :
 				printf("UNKNOWN");
 		}
-		printf(": %s] -> ", current->value);
+		printf(": %s] -> ", current->value ? current->value : "(null)");
 		current = current->next;
 	}
 	printf("NULL\n");

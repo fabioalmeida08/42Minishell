@@ -6,7 +6,7 @@
 /*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 14:32:35 by bolegari          #+#    #+#             */
-/*   Updated: 2025/12/16 14:38:23 by bolegari         ###   ########.fr       */
+/*   Updated: 2025/12/18 14:12:33 by bolegari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ void	execute_ast(t_ast *ast, t_shell *sh)
 	if (ast->type == CMD_NODE)
 		execute_cmd(ast, sh);
 }
-
 
 void	interactive_mode(t_shell *sh)
 {
@@ -46,9 +45,11 @@ void	interactive_mode(t_shell *sh)
 			free(input);
 			continue ;
 		}
+		/*
 		sh->head_ast = parser_ast(sh->head_tokens);
 		print_ast(sh->head_ast, 1);
 		execute_ast(sh->head_ast, sh);
+		*/
 		ft_free_tokens(sh->head_tokens);
 		sh->head_tokens = NULL;
 		free(input);
