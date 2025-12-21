@@ -14,16 +14,38 @@
 
 void	execute_cmd(t_ast *ast, t_shell *sh)
 {
+	pid_t	pid;
+	int		status;
+
 	if (is_builtin(ast->args, sh))
+	{
 		exec_builtin(ast->args, sh);
-	else
+		return ;
+	}
+
+	pid = fork();
+	if (pid == 0)
 		execve_cmd(ast->args, sh);
+	waitpid(pid, &status, 0);
+	if (WIFEXITED(status))
+		sh->exit_status = WEXITSTATUS(status);
+	else
+		sh->exit_status = 1;
 }
+// void	execute_cmd(t_ast *ast, t_shell *sh)
+// {
+// 	if (is_builtin(ast->args, sh))
+// 		exec_builtin(ast->args, sh);
+// 	else
+// 		execve_cmd(ast->args, sh);
+// }
 
 void	execute_ast(t_ast *ast, t_shell *sh)
 {
 	if (ast->type == CMD_NODE)
 		execute_cmd(ast, sh);
+	if (ast->type == PIPE_NODE)
+		execute_pipe(ast, sh);
 }
 
 
