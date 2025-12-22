@@ -21,24 +21,25 @@ SIMPLE_EXECVE_DIR := $(SRCS_DIR)/simple_execve
 BUILTIN_DIR := $(SRCS_DIR)/builtin
 PARSER_DIR := $(SRCS_DIR)/parser
 
-SRCS := main.c \
+SRCS := 		main.c \
 				interactive_mode.c \
 				non_interactive_mode.c \
 
-LEXER_SRC := lexer_utils.c \
+LEXER_SRC := 	lexer_utils.c \
 				token_utils.c \
 				extract_world.c \
 				ft_strtok.c \
 				handle_op.c
 
-PARSER_SRC := parser.c \
-							parser_utils.c
+PARSER_SRC := 	parser_cmd.c \
+				parser_pipe.c \
+				parser_logical.c 
 
 SIGNAL_SRC := signals.c \
 
 INIT_ENV_SRC := init_env.c \
 				init_env_utils.c \
-				init_env_utils2.c \
+				env_to_envp.c \
 
 SIMPLE_EXECVE_SRC := execve_cmd.c \
 

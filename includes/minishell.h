@@ -6,7 +6,7 @@
 /*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 10:47:12 by fabialme          #+#    #+#             */
-/*   Updated: 2025/12/18 14:32:03 by bolegari         ###   ########.fr       */
+/*   Updated: 2025/12/22 18:25:53 by bolegari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,10 @@
 
 typedef enum e_node_type
 {
-	CMD_NODE,
-	PIPE_NODE
+	NODE_CMD,
+	NODE_PIPE,
+	NODE_AND,
+	NODE_OR
 }	t_node_type;
 
 typedef enum e_token_type
@@ -99,11 +101,14 @@ void	non_interactive_mode(void);
 
 //LEXER/TOKEN
 t_token	*ft_tokenize(const char *str, t_shell *sh);
+t_token	*ft_strtok(const char *str, t_shell *sh);
 void	lexer_syntax_error(t_token *token, t_shell *sh);
 t_token	*create_token(t_token_type type, char *value);
 void	add_token_back(t_token **head, t_token *new_token);
 void	ft_free_tokens(t_token *tokens);
-void	print_tokens(t_token *tokens);
+char	*extract_word(const char **str);
+t_token	*handle_operator(const char **str);
+bool	check_quotes(const char *str);
 
 //SIGNAL
 void	handle_sigint(int sig);
@@ -134,15 +139,18 @@ void	builtin_export(char **cmd, t_shell *sh);
 void	builtin_unset(char **cmd, t_shell *sh);
 
 //PARSER
-t_token	*find_last_pipe(t_token *tokens);
-t_ast	*parser_ast(t_token *tokens);
+t_ast	*create_node(t_node_type type);
+void	brake_list_until(t_token *list, t_token *until);
+void	paren_depth_counter(int *depth, t_token *current);
+t_token	*find_last_logical_node(t_token *tokens);
+t_ast	*parser_logical(t_token *tokens);
+t_token	*find_last_node(t_token *tokens, t_token_type to_find);
+t_ast	*parser_pipe(t_token *tokens);
 t_ast	*parser_cmd(t_token *tokens);
-char	*extract_word(const char **str);
-t_token	*handle_operator(const char **str);
-t_token	*ft_strtok(const char *str, t_shell *sh);
-bool	check_quotes(const char *str);
-t_ast	*parser_cmd(t_token *tokens);
+t_ast	*simple_cmd(t_token *tokens);
+t_token	*complex_cmd(t_token *tokens, int *depth);
 
 //DEBUG
 void	print_ast(t_ast *node, int depth);
+void	print_tokens(t_token *tokens);
 #endif
