@@ -6,7 +6,7 @@
 /*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 10:47:12 by fabialme          #+#    #+#             */
-/*   Updated: 2025/12/16 14:40:28 by bolegari         ###   ########.fr       */
+/*   Updated: 2025/12/16 16:09:52 by fabialme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,8 +120,18 @@ int		update_env_var(t_env *env_list, char *key, char *value);
 int		remove_env_var(t_env **env_list, char *key);
 
 //SIMPLE EXECVE
+void	execute_cmd(t_ast *ast, t_shell *sh);
 void	execve_cmd(char **input, t_shell *sh);
+void	execute_pipe(t_ast *ast, t_shell *sh);
+void	execute_ast(t_ast *ast, t_shell *sh);
 
+//EXECV
+char	*try_path(char *dir, char *cmd);
+
+char	*search_in_paths(char **paths, char *cmd);
+char	*find_path(char *cmd, t_shell *sh);
+void	exec_child(char *path, char **input, t_shell *sh);
+void	exec_parent(pid_t pid, t_shell *sh);
 //BUILTIN
 void	init_builtin(t_shell *sh);
 int		is_builtin(char **cmd, t_shell *sh);
