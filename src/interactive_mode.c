@@ -14,31 +14,11 @@
 
 void	execute_cmd(t_ast *ast, t_shell *sh)
 {
-	pid_t	pid;
-	int		status;
-
 	if (is_builtin(ast->args, sh))
-	{
 		exec_builtin(ast->args, sh);
-		return ;
-	}
-
-	pid = fork();
-	if (pid == 0)
-		execve_cmd(ast->args, sh);
-	waitpid(pid, &status, 0);
-	if (WIFEXITED(status))
-		sh->exit_status = WEXITSTATUS(status);
 	else
-		sh->exit_status = 1;
+		execve_cmd(ast->args, sh);
 }
-// void	execute_cmd(t_ast *ast, t_shell *sh)
-// {
-// 	if (is_builtin(ast->args, sh))
-// 		exec_builtin(ast->args, sh);
-// 	else
-// 		execve_cmd(ast->args, sh);
-// }
 
 void	execute_ast(t_ast *ast, t_shell *sh)
 {
@@ -69,7 +49,7 @@ void	interactive_mode(t_shell *sh)
 			continue ;
 		}
 		sh->head_ast = parser_ast(sh->head_tokens);
-		print_ast(sh->head_ast, 1);
+		// print_ast(sh->head_ast, 1);
 		execute_ast(sh->head_ast, sh);
 		ft_free_tokens(sh->head_tokens);
 		sh->head_tokens = NULL;

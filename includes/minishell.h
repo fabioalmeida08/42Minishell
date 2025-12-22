@@ -123,6 +123,7 @@ int		remove_env_var(t_env **env_list, char *key);
 void	execute_cmd(t_ast *ast, t_shell *sh);
 void	execve_cmd(char **input, t_shell *sh);
 void	execute_pipe(t_ast *ast, t_shell *sh);
+void	execute_ast(t_ast *ast, t_shell *sh);
 
 //EXECV
 char	*try_path(char *dir, char *cmd);
