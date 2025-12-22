@@ -12,34 +12,44 @@
 
 #include "../../includes/minishell.h"
 
-void	execute_pipe(t_ast *ast, t_shell *sh)
+void execute_pipe(t_ast *ast, t_shell *sh)
 {
-	(void) ast;
-	(void) sh;
-	int	fd[2];
-	pipe(fd);
+    int     fd[2];
+    pid_t   pid_left;
+    pid_t   pid_right;
+    int     status_right;
 
-	if (fork() == 0)
-	{
-		dup2(fd[1], STDOUT_FILENO);
-		close(fd[0]);
-		close(fd[1]);
-		execve("/bin/ls", (char*[]){"ls", NULL}, sh->envp);
-	}
+    pipe(fd);
 
-	if (fork() == 0)
-	{
-		dup2(fd[0], STDIN_FILENO);
-		close(fd[1]);
-		close(fd[0]);
-		execve("/bin/grep", (char*[]){"grep", "c", NULL}, sh->envp);
-	}
+    pid_left = fork();
+    if (pid_left == 0)
+    {
+        dup2(fd[1], STDOUT_FILENO);
+        close(fd[0]);
+        close(fd[1]);
+        execute_ast(ast->left, sh);
+        exit(sh->exit_status);
+    }
 
-	close(fd[0]);
-	close(fd[1]);
-	wait(NULL);
-	wait(NULL);
-	//TODO: ligar o output do primeiro comando com o output do segundo
-	printf("pipe exec ast-left %s %s\n",ast->right->args[0],ast->right->args[1]);
+    pid_right = fork();
+    if (pid_right == 0)
+    {
+        dup2(fd[0], STDIN_FILENO);
+        close(fd[1]);
+        close(fd[0]);
+        execute_ast(ast->right, sh);
+        exit(sh->exit_status);
+    }
 
+    close(fd[0]);
+    close(fd[1]);
+
+    waitpid(pid_left, NULL, 0);
+    waitpid(pid_right, &status_right, 0);
+
+    if (WIFEXITED(status_right))
+        sh->exit_status = WEXITSTATUS(status_right);
+    else if (WIFSIGNALED(status_right))
+        sh->exit_status = 128 + WTERMSIG(status_right);
+		printf("\nexit status do ultimo comando = %d\n",sh->exit_status);
 }
