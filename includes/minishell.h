@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 10:47:12 by fabialme          #+#    #+#             */
-/*   Updated: 2025/12/22 18:25:53 by bolegari         ###   ########.fr       */
+/*   Updated: 2025/12/29 18:54:55 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,6 @@
 # include <readline/history.h>
 # include "../libft/includes/libft.h"
 
-typedef enum e_node_type
-{
-	NODE_CMD,
-	NODE_PIPE,
-	NODE_AND,
-	NODE_OR
-}	t_node_type;
-
 typedef enum e_token_type
 {
 	TK_WORD,
@@ -46,29 +38,45 @@ typedef enum e_token_type
 	TK_UNKNOWN
 }	t_token_type;
 
+typedef enum e_node_type
+{
+	NODE_CMD,
+	NODE_PIPE,
+	NODE_AND,
+	NODE_OR
+}	t_node_type;
+
+typedef enum e_redir_type
+{
+	REDIR_IN,
+	REDIR_OUT,
+	REDIR_APPEND,
+	REDIR_HEREDOC
+}	t_redir_type;
+
 typedef struct s_redirect
 {
-	t_token_type	type;
-	char			*file;
-	char			*content;
+	t_redir_type		type;
+	char				*target;
+	bool				expand;
+	int					fd;
+	struct s_redirect	*next;
 }	t_redirect;
 
 typedef struct s_ast
 {
 	t_node_type		type;
-	struct s_ast	*left;// lado esquerdo do pipe ou NULL se comando simples
-	struct s_ast	*right;// lado direito do pipe ou NULL se comando simples
-	// Apenas se type == CMD_NODE
-	char			**args;// comando + argumentos
-	t_redirect		*in;// redirecionamento de entrada
-	t_redirect		*out;// redirecionamento de saída
+	struct s_ast	*left;
+	struct s_ast	*right;
+	char			**args;
+	t_redirect		*redirs;
 }	t_ast;
 
 typedef struct s_env
 {
 	char			*key;
 	char			*value;
-	struct s_env	*next;	
+	struct s_env	*next;
 }	t_env;
 
 typedef struct s_shell	t_shell;
@@ -100,15 +108,19 @@ void	interactive_mode(t_shell *sh);
 void	non_interactive_mode(void);
 
 //LEXER/TOKEN
-t_token	*ft_tokenize(const char *str, t_shell *sh);
+t_token	*handle_operator(const char **str);
 t_token	*ft_strtok(const char *str, t_shell *sh);
 void	lexer_syntax_error(t_token *token, t_shell *sh);
+t_token	*ft_tokenize(const char *str, t_shell *sh);
 t_token	*create_token(t_token_type type, char *value);
 void	add_token_back(t_token **head, t_token *new_token);
 void	ft_free_tokens(t_token *tokens);
 char	*extract_word(const char **str);
-t_token	*handle_operator(const char **str);
-bool	check_quotes(const char *str);
+
+//REDIRECTION
+bool	is_redir(t_token_type type);
+void	add_redir(t_ast *node, t_redirect *new_redir);
+void	handle_redirection(t_ast *node, t_token *redir, t_token *target);
 
 //SIGNAL
 void	handle_sigint(int sig);
@@ -140,15 +152,16 @@ void	builtin_unset(char **cmd, t_shell *sh);
 
 //PARSER
 t_ast	*create_node(t_node_type type);
-void	brake_list_until(t_token *list, t_token *until);
-void	paren_depth_counter(int *depth, t_token *current);
-t_token	*find_last_logical_node(t_token *tokens);
-t_ast	*parser_logical(t_token *tokens);
-t_token	*find_last_node(t_token *tokens, t_token_type to_find);
-t_ast	*parser_pipe(t_token *tokens);
-t_ast	*parser_cmd(t_token *tokens);
-t_ast	*simple_cmd(t_token *tokens);
-t_token	*complex_cmd(t_token *tokens, int *depth);
+void	paren_depth_checker(int *depth, t_token *current);
+t_token	*find_last_logical_node(t_token *start, t_token *end);
+t_ast	*parser_logical(t_token *start, t_token *end, t_shell *sh);
+t_token	*find_last_node(t_token *start, t_token *end, t_token_type to_find);
+t_ast	*parser_pipe(t_token *start, t_token *end, t_shell *sh);
+t_ast	*simple_cmd(t_token *start, t_token *end, t_shell *sh);
+t_ast	*parser_cmd(t_token *start, t_token *end, t_shell *sh);
+void	syntax_error(t_token *token, t_shell *sh);
+void	free_ast(t_ast *node);
+void	free_cmd(t_redirect *redir, char **args);
 
 //DEBUG
 void	print_ast(t_ast *node, int depth);

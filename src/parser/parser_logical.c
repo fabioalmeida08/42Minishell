@@ -3,82 +3,72 @@
 /*                                                        :::      ::::::::   */
 /*   parser_logical.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 13:53:45 by fabialme          #+#    #+#             */
-/*   Updated: 2025/12/22 17:49:17 by bolegari         ###   ########.fr       */
+/*   Updated: 2025/12/29 18:58:35 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-t_ast	*create_node(t_node_type type)
+t_token	*find_last_logical_node(t_token *start, t_token *end)
 {
-	t_ast	*node;
-
-	node = malloc(sizeof(t_ast));
-	if (!node)
-		return (NULL);
-	node->type = type;
-	return (node);
-}
-
-void	brake_list_until(t_token *list, t_token *until)
-{
-	t_token	*prev;
-
-	prev = list;
-	while (prev && (prev->next != until))
-		prev = prev->next;
-	if (prev)
-		prev->next = NULL;
-}
-
-void	paren_depth_counter(int *depth, t_token *current)
-{
-	if (current->type == TK_PAREN_OPEN)
-		*depth += 1;
-	else if (current->type == TK_PAREN_CLOSE)
-		*depth -= 1;
-}
-
-t_token	*find_last_logical_node(t_token *tokens)
-{
-	t_token	*last_logical;
-	t_token	*current;
 	int		depth;
+	t_token	*current_tk;
+	t_token	*last_logical;
 
 	depth = 0;
+	current_tk = start;
 	last_logical = NULL;
-	current = tokens;
-	while (current)
+	while (current_tk && current_tk != end)
 	{
-		paren_depth_counter(&depth, current);
-		if ((current->type == TK_AND || current->type == TK_OR) && depth == 0)
-			last_logical = current;
-		current = current->next;
+		paren_depth_checker(&depth, current_tk);
+		if (current_tk->type == TK_AND || current_tk->type == TK_OR)
+		{
+			if (depth == 0)
+				last_logical = current_tk;
+		}
+		current_tk = current_tk->next;
 	}
 	return (last_logical);
 }
 
-t_ast	*parser_logical(t_token *tokens)
+static t_ast	*create_one_node(t_token *last_logical)
 {
-	t_token	*last_logical;
-	t_token	*right_tokens;
-	t_token	*left_tokens;
 	t_ast	*node;
 
-	last_logical = find_last_logical_node(tokens);
-	if (!last_logical)
-		return (parser_pipe(tokens));
-	right_tokens = last_logical->next;
-	brake_list_until(tokens, last_logical);
-	left_tokens = tokens;
 	if (last_logical->type == TK_AND)
 		node = create_node(NODE_AND);
 	else
 		node = create_node(NODE_OR);
-	node->left = parser_logical(left_tokens);
-	node->right = parser_logical(right_tokens);
+	return (node);
+}
+
+t_ast	*parser_logical(t_token *start, t_token *end, t_shell *sh)
+{
+	t_token	*last_log;
+	t_ast	*node;
+
+	if (!start || start == end)
+		return (NULL);
+	last_log = find_last_logical_node(start, end);
+	if (!last_log)
+		return (parser_pipe(start, end, sh));
+	if (!last_log->next || last_log == start || last_log->next == end)
+	{
+		syntax_error(last_log, sh);
+		return (NULL);
+	}
+	node = create_one_node(last_log);
+	if (!node)
+		return (NULL);
+	node->left = parser_logical(start, last_log, sh);
+	node->right = parser_logical(last_log->next, end, sh);
+	if (!node->left || !node->right)
+	{
+		free_ast(node);
+		return (NULL);
+	}
 	return (node);
 }
