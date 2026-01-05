@@ -22,6 +22,7 @@ BUILTIN_DIR := $(SRCS_DIR)/builtin
 PARSER_DIR := $(SRCS_DIR)/parser
 REDIRECTION_DIR := $(SRCS_DIR)/redirection
 DEBUGING_DIR := $(SRCS_DIR)/debuging
+EXEC_DIR := $(SRCS_DIR)/exec
 
 SRCS := 		main.c \
 				interactive_mode.c \
@@ -48,6 +49,7 @@ INIT_ENV_SRC := init_env.c \
 				env_to_envp.c \
 
 SIMPLE_EXECVE_SRC := execve_cmd.c \
+										 execve_utils.c
 
 BUILTIN_SRC :=	builtin_utils.c \
 				builtin_env.c \
@@ -57,6 +59,7 @@ BUILTIN_SRC :=	builtin_utils.c \
 
 DEBUGING_SRC := print_tokens.c \
 				print_ast.c
+EXEC_SRC := exec_pipe.c
 
 SRCS := $(addprefix $(SRCS_DIR)/, $(SRCS))
 LEXER_SRC := $(addprefix $(LEXER_DIR)/, $(LEXER_SRC))
@@ -67,8 +70,8 @@ SIMPLE_EXECVE_SRC := $(addprefix $(SIMPLE_EXECVE_DIR)/, $(SIMPLE_EXECVE_SRC))
 BUILTIN_SRC := $(addprefix $(BUILTIN_DIR)/, $(BUILTIN_SRC))
 REDIRECTION_SRC := $(addprefix $(REDIRECTION_DIR)/, $(REDIRECTION_SRC))
 DEBUGING_SRC := $(addprefix $(DEBUGING_DIR)/, $(DEBUGING_SRC))
-
-ALL_SRCS := $(SRCS) $(LEXER_SRC) $(SIGNAL_SRC) $(INIT_ENV_SRC) $(SIMPLE_EXECVE_SRC) $(BUILTIN_SRC) $(PARSER_SRC) $(REDIRECTION_SRC) $(DEBUGING_SRC)
+EXEC_SRC := $(addprefix $(EXEC_DIR)/, $(EXEC_SRC))
+ALL_SRCS := $(SRCS) $(LEXER_SRC) $(SIGNAL_SRC) $(INIT_ENV_SRC) $(SIMPLE_EXECVE_SRC) $(BUILTIN_SRC) $(PARSER_SRC) $(REDIRECTION_SRC) $(DEBUGING_SRC) $(EXEC_SRC)
 OBJS := $(ALL_SRCS:%.c=$(OBJS_DIR)/%.o)
 
 DEPS := $(OBJS:.o=.d)
