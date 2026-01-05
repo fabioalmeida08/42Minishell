@@ -56,6 +56,7 @@ BUILTIN_SRC :=	builtin_utils.c \
 				builtin_pwd.c \
 				builtin_export.c \
 				builtin_unset.c \
+				builtin_cd.c \
 
 DEBUGING_SRC := print_tokens.c \
 				print_ast.c
