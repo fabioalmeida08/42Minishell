@@ -24,7 +24,7 @@ void	execute_ast(t_ast *ast, t_shell *sh)
 {
 	if (ast->type == NODE_CMD)
 		execute_cmd(ast, sh);
-	if (ast->type == PIPE_NODE)
+	if (ast->type == NODE_PIPE)
 		execute_pipe(ast, sh);
 }
 
@@ -70,12 +70,10 @@ void	interactive_mode(t_shell *sh)
 			free(input);
 			continue ;
 		}
-
 		print_ast(sh->head_ast, 1);
-		sh->head_ast = parser_ast(sh->head_tokens);
 		execute_ast(sh->head_ast, sh);
 		free_internal_use_structs(sh);
 		free(input);
-	}
-	free_all_structs(sh);
+  }
+  free_all_structs(sh);
 }
