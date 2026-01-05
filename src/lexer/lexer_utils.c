@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 11:48:32 by fabialme          #+#    #+#             */
-/*   Updated: 2026/01/02 09:38:50 by marvin           ###   ########.fr       */
+/*   Updated: 2026/01/05 16:39:21 by bolegari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,17 +44,17 @@ static bool	check_quotes(const char *str)
 	return (!in_single && !in_double && !escaped);
 }
 
-t_token	*ft_tokenize(const char *str, t_shell *sh)
+t_token	*ft_tokenize(t_shell *sh)
 {
 	t_token	*tokens;
 
 	tokens = NULL;
-	if (!check_quotes(str))
+	if (!check_quotes(sh->input))
 	{
 		lexer_syntax_error(tokens, sh);
 		return (NULL);
 	}
-	tokens = ft_strtok(str, sh);
+	tokens = ft_strtok(sh->input, sh);
 	if (tokens)
 		print_tokens(tokens);
 	if (!tokens)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 10:47:12 by fabialme          #+#    #+#             */
-/*   Updated: 2025/12/16 16:09:52 by fabialme         ###   ########.fr       */
+/*   Updated: 2026/01/05 16:38:58 by bolegari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,7 @@ typedef struct s_token
 typedef struct s_shell
 {
 	char		**envp;
+	char		*input;
 	t_env		*env_list;
 	int			exit_status;
 	t_builtin	*g_builtins;
@@ -111,7 +112,7 @@ void	non_interactive_mode(void);
 t_token	*handle_operator(const char **str);
 t_token	*ft_strtok(const char *str, t_shell *sh);
 void	lexer_syntax_error(t_token *token, t_shell *sh);
-t_token	*ft_tokenize(const char *str, t_shell *sh);
+t_token	*ft_tokenize(t_shell *sh);
 t_token	*create_token(t_token_type type, char *value);
 void	add_token_back(t_token **head, t_token *new_token);
 void	ft_free_tokens(t_token *tokens);

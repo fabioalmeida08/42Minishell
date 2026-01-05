@@ -6,7 +6,7 @@
 /*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 20:13:12 by bolegari          #+#    #+#             */
-/*   Updated: 2025/12/18 17:31:11 by bolegari         ###   ########.fr       */
+/*   Updated: 2026/01/05 16:57:38 by bolegari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,12 +89,11 @@ void	init_env(char **envp, t_shell *shell_vars)
 	char	*value;
 	t_env	*node;
 
-	i = 0;
+	i = -1;
 	shell_vars->envp = envp;
 	shell_vars->env_list = NULL;
-	shell_vars->head_tokens = NULL;
 	shell_vars->exit_status = 0;
-	while (envp[i])
+	while (envp[++i])
 	{
 		key_value_breaker(envp[i], &key, &value);
 		node = create_env_node(key, value);
@@ -105,7 +104,6 @@ void	init_env(char **envp, t_shell *shell_vars)
 			free_env_list(shell_vars->env_list);
 			return ;
 		}
-		i++;
 	}
 	i = ft_atoi(get_env_value(shell_vars->env_list, "SHLVL")) + 1;
 	update_env_var(shell_vars->env_list, "SHLVL", ft_itoa(i));

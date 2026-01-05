@@ -6,7 +6,7 @@
 /*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 16:10:15 by bolegari          #+#    #+#             */
-/*   Updated: 2025/12/16 15:17:13 by bolegari         ###   ########.fr       */
+/*   Updated: 2026/01/05 16:56:35 by bolegari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,9 @@ int	main(int argc, char *argv[], char *envp[])
 	(void)argv;
 	init_env(envp, &sh);
 	init_builtin(&sh);
+	sh.input = NULL;
+	sh.head_tokens = NULL;
+	sh.head_ast = NULL;
 	if (isatty(STDIN_FILENO))
 	{
 		setup_interactive_parent_signals();
