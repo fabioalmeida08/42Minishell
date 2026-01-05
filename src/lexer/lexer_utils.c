@@ -3,28 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 11:48:32 by fabialme          #+#    #+#             */
-/*   Updated: 2025/12/15 15:22:45 by fabialme         ###   ########.fr       */
+/*   Updated: 2026/01/02 09:38:50 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	*lexer_syntax_error(t_token *token, t_shell *sh)
+void	lexer_syntax_error(t_token *token, t_shell *sh)
 {
 	if (token)
-	{
-		free(token->value);
-		free(token);
-	}
+		ft_free_tokens(token);
 	ft_putstr_fd("Syntax error\n", 2);
 	sh->exit_status = 2;
-	return (NULL);
 }
 
-bool	check_syntax(const char *str)
+static bool	check_quotes(const char *str)
 {
 	bool	in_single;
 	bool	in_double;
@@ -53,11 +49,16 @@ t_token	*ft_tokenize(const char *str, t_shell *sh)
 	t_token	*tokens;
 
 	tokens = NULL;
-	if (!check_syntax(str))
-		return (lexer_syntax_error(tokens, sh));
+	if (!check_quotes(str))
+	{
+		lexer_syntax_error(tokens, sh);
+		return (NULL);
+	}
 	tokens = ft_strtok(str, sh);
+	if (tokens)
+		print_tokens(tokens);
 	if (!tokens)
 		return (NULL);
-	print_tokens(tokens);
+	printf("LEXER SYNTAX OK !!!\n");
 	return (tokens);
 }

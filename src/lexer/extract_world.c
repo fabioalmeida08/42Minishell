@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   extract_world.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fabialme <fabialme@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 15:09:26 by fabialme          #+#    #+#             */
-/*   Updated: 2025/12/15 15:10:25 by fabialme         ###   ########.fr       */
+/*   Updated: 2025/12/18 14:20:22 by bolegari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ static int	is_invalid_input(const char **str)
 
 static int	is_word_delimiter(char c)
 {
-	if (ft_is_whitespace(c) || c == '|' || c == '<' || c == '>')
+	if (ft_is_whitespace(c) || c == '|' || c == '<' || c == '>' || c == '&'
+		|| c == '(' || c == ')')
 		return (1);
 	return (0);
 }

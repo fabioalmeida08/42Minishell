@@ -20,33 +20,46 @@ INIT_ENV_DIR := $(SRCS_DIR)/init_env
 SIMPLE_EXECVE_DIR := $(SRCS_DIR)/simple_execve
 BUILTIN_DIR := $(SRCS_DIR)/builtin
 PARSER_DIR := $(SRCS_DIR)/parser
+REDIRECTION_DIR := $(SRCS_DIR)/redirection
+DEBUGING_DIR := $(SRCS_DIR)/debuging
+EXEC_DIR := $(SRCS_DIR)/exec
 
-SRCS := main.c \
+SRCS := 		main.c \
 				interactive_mode.c \
 				non_interactive_mode.c \
 
-LEXER_SRC := lexer_utils.c \
+LEXER_SRC := 	lexer_utils.c \
 				token_utils.c \
 				extract_world.c \
 				ft_strtok.c \
 				handle_op.c
 
-PARSER_SRC := parser.c \
-							parser_utils.c
+PARSER_SRC := 	parser_cmd.c \
+				parser_pipe.c \
+				parser_logical.c \
+				parser_utils.c \
+				simple_cmd.c 
+
+REDIRECTION_SRC := handle_redirection.c \
 
 SIGNAL_SRC := signals.c \
 
 INIT_ENV_SRC := init_env.c \
 				init_env_utils.c \
-				init_env_utils2.c \
+				env_to_envp.c \
 
 SIMPLE_EXECVE_SRC := execve_cmd.c \
+										 execve_utils.c
 
 BUILTIN_SRC :=	builtin_utils.c \
 				builtin_env.c \
 				builtin_pwd.c \
 				builtin_export.c \
 				builtin_unset.c \
+
+DEBUGING_SRC := print_tokens.c \
+				print_ast.c
+EXEC_SRC := exec_pipe.c
 
 SRCS := $(addprefix $(SRCS_DIR)/, $(SRCS))
 LEXER_SRC := $(addprefix $(LEXER_DIR)/, $(LEXER_SRC))
@@ -55,8 +68,10 @@ SIGNAL_SRC := $(addprefix $(SIGNAL_DIR)/, $(SIGNAL_SRC))
 INIT_ENV_SRC := $(addprefix $(INIT_ENV_DIR)/, $(INIT_ENV_SRC))
 SIMPLE_EXECVE_SRC := $(addprefix $(SIMPLE_EXECVE_DIR)/, $(SIMPLE_EXECVE_SRC))
 BUILTIN_SRC := $(addprefix $(BUILTIN_DIR)/, $(BUILTIN_SRC))
-
-ALL_SRCS := $(SRCS) $(LEXER_SRC) $(SIGNAL_SRC) $(INIT_ENV_SRC) $(SIMPLE_EXECVE_SRC) $(BUILTIN_SRC) $(PARSER_SRC)
+REDIRECTION_SRC := $(addprefix $(REDIRECTION_DIR)/, $(REDIRECTION_SRC))
+DEBUGING_SRC := $(addprefix $(DEBUGING_DIR)/, $(DEBUGING_SRC))
+EXEC_SRC := $(addprefix $(EXEC_DIR)/, $(EXEC_SRC))
+ALL_SRCS := $(SRCS) $(LEXER_SRC) $(SIGNAL_SRC) $(INIT_ENV_SRC) $(SIMPLE_EXECVE_SRC) $(BUILTIN_SRC) $(PARSER_SRC) $(REDIRECTION_SRC) $(DEBUGING_SRC) $(EXEC_SRC)
 OBJS := $(ALL_SRCS:%.c=$(OBJS_DIR)/%.o)
 
 DEPS := $(OBJS:.o=.d)

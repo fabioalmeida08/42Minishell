@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   interactive_mode.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 14:32:35 by bolegari          #+#    #+#             */
-/*   Updated: 2025/12/16 14:38:23 by bolegari         ###   ########.fr       */
+/*   Updated: 2025/12/29 17:54:42 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,33 @@ void	execute_cmd(t_ast *ast, t_shell *sh)
 
 void	execute_ast(t_ast *ast, t_shell *sh)
 {
-	if (ast->type == CMD_NODE)
+	if (ast->type == NODE_CMD)
 		execute_cmd(ast, sh);
+	if (ast->type == NODE_PIPE)
+		execute_pipe(ast, sh);
 }
 
+void	free_internal_use_structs(t_shell *sh)
+{
+	if (sh->head_ast)
+	{
+		free_ast(sh->head_ast);
+		sh->head_ast = NULL;
+	}
+	if (sh->head_tokens)
+	{
+		ft_free_tokens(sh->head_tokens);
+		sh->head_tokens = NULL;
+	}
+}
+
+void	free_all_structs(t_shell *sh)
+{
+	free_internal_use_structs(sh);
+	if (sh->g_builtins)
+		free(sh->g_builtins);
+	free_env_list(sh->env_list);
+}
 
 void	interactive_mode(t_shell *sh)
 {
@@ -41,19 +64,16 @@ void	interactive_mode(t_shell *sh)
 		}
 		add_history(input);
 		sh->head_tokens = ft_tokenize(input, sh);
-		if (!sh->head_tokens)
+		sh->head_ast = parser_logical(sh->head_tokens, NULL, sh);
+		if (!sh->head_tokens || !sh->head_ast)
 		{
 			free(input);
 			continue ;
 		}
-		sh->head_ast = parser_ast(sh->head_tokens);
 		print_ast(sh->head_ast, 1);
 		execute_ast(sh->head_ast, sh);
-		ft_free_tokens(sh->head_tokens);
-		sh->head_tokens = NULL;
+		free_internal_use_structs(sh);
 		free(input);
-	}
-	ft_free_tokens(sh->head_tokens);
-	free(sh->g_builtins);
-	free_env_list(sh->env_list);
+  }
+  free_all_structs(sh);
 }
