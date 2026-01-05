@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   interactive_mode.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 14:32:35 by bolegari          #+#    #+#             */
-/*   Updated: 2025/12/29 17:54:42 by marvin           ###   ########.fr       */
+/*   Updated: 2026/01/05 14:17:04 by bolegari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	interactive_mode(t_shell *sh)
 
 	while (1)
 	{
-		input = readline("Minishell> ");
+		input = readline("Minishell>  ");
 		if (input == NULL)
 		{
 			free(input);
