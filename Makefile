@@ -106,4 +106,7 @@ re: fclean all
 	@make $(MAKEFLAGS) -C $(LIBFT_PATH) re
 	@echo "$(BLUE)🔄 $(NAME) rebuild$(RESET)"
 
+run: all
+	valgrind -s --suppressions=readline.supp --track-fds=yes --leak-check=full --show-leak-kinds=all ./minishell
+
 .PHONY: all clean fclean re

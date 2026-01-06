@@ -25,5 +25,5 @@ void	builtin_env(char **cmd, t_shell *sh)
 		printf("%s\n", envp_recreated[i]);
 		i++;
 	}
-	free(envp_recreated);
+	free_envp(envp_recreated);
 }
