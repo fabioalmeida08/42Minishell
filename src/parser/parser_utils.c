@@ -65,15 +65,13 @@ void	free_cmd(t_redirect *redir, char **args)
 	t_redirect	*tmp;
 	int			i;
 
-	if (!args || !redir)
-		return ;
-	i = 0;
-	while (args[i])
+	if (args)
 	{
-		free(args[i]);
-		i++;
+		i = 0;
+		while (args[i])
+			free(args[i++]);
+		free(args);
 	}
-	free(args);
 	while (redir)
 	{
 		tmp = redir->next;

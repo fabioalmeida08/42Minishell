@@ -6,7 +6,7 @@
 /*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 10:47:12 by fabialme          #+#    #+#             */
-/*   Updated: 2026/01/05 16:38:58 by bolegari         ###   ########.fr       */
+/*   Updated: 2026/01/06 12:10:45 by bolegari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,6 +138,7 @@ char	*get_env_value(t_env *env_list, char *key);
 int		add_env_var(t_env **env_list, char *key, char *value);
 int		update_env_var(t_env *env_list, char *key, char *value);
 int		remove_env_var(t_env **env_list, char *key);
+void	update_shlvl(t_shell *shell_vars);
 
 //SIMPLE EXECVE
 void	execute_cmd(t_ast *ast, t_shell *sh);

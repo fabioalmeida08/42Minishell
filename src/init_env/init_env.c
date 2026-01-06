@@ -6,7 +6,7 @@
 /*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 20:13:12 by bolegari          #+#    #+#             */
-/*   Updated: 2026/01/05 16:57:38 by bolegari         ###   ########.fr       */
+/*   Updated: 2026/01/06 12:10:25 by bolegari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,5 @@ void	init_env(char **envp, t_shell *shell_vars)
 			return ;
 		}
 	}
-	i = ft_atoi(get_env_value(shell_vars->env_list, "SHLVL")) + 1;
-	update_env_var(shell_vars->env_list, "SHLVL", ft_itoa(i));
+	update_shlvl(shell_vars);
 }

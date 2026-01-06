@@ -6,7 +6,7 @@
 /*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 14:32:35 by bolegari          #+#    #+#             */
-/*   Updated: 2026/01/05 16:45:49 by bolegari         ###   ########.fr       */
+/*   Updated: 2026/01/06 12:53:55 by bolegari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,13 +64,12 @@ void	interactive_mode(t_shell *sh)
 		sh->head_ast = parser_logical(sh->head_tokens, NULL, sh);
 		if (!sh->head_ast)
 		{
-			free(sh->input);
+			free_internal_use_structs(sh);
 			continue ;
 		}
 		print_ast(sh->head_ast, 1);
 		execute_ast(sh->head_ast, sh);
 		free_internal_use_structs(sh);
-		free(sh->input);
 	}
 	rl_clear_history();
 	free_all_structs(sh);
