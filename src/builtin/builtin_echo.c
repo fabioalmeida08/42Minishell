@@ -1,35 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtin_cd_utils.c                                 :+:      :+:    :+:   */
+/*   builtin_echo.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fabialme <fabialme@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/06 11:22:13 by fabialme          #+#    #+#             */
-/*   Updated: 2026/01/06 11:34:56 by fabialme         ###   ########.fr       */
+/*   Created: 2026/01/06 14:50:19 by fabialme          #+#    #+#             */
+/*   Updated: 2026/01/06 15:00:34 by fabialme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
 
-// void	builtin_cd(char **cmd, t_shell *sh)
-// void	change_home(t_shell *sh)
-// {
-// 	char *home_dir;
-// 	char	*cwd;
-//
-// 	home_dir = get_env_value(sh->env_list,"HOME");
-// 	cwd = get_env_value(sh->env_list, "PWD");
-//
-// 	if (chdir(home_dir) != 0)
-// 	{
-// 			ft_putstr_fd("minishell: cd: cannot find HOME", 2);
-// 			sh->exit_status = 1;
-// 	}
-// 	else
-// 	{
-// 			update_work_dirs(sh, cwd);
-// 			sh->exit_status = 0;
-// 	}
-// }
+void	builtin_echo(char **cmd, t_shell *sh)
+{
+	if (ft_strcmp(cmd[1], "-n") && cmd[2])
+	{
+		printf("%s",cmd[2]);
+		sh->exit_status = 1;
+	}
+	else if (cmd[2])
+	{
+		printf("%s\n",cmd[2]);
+		sh->exit_status = 1;
+	}
+}

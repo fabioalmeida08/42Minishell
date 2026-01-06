@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 10:47:12 by fabialme          #+#    #+#             */
-/*   Updated: 2026/01/05 16:44:47 by fabialme         ###   ########.fr       */
+/*   Updated: 2026/01/06 14:53:41 by fabialme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,6 +161,7 @@ void	builtin_export(char **cmd, t_shell *sh);
 void	builtin_unset(char **cmd, t_shell *sh);
 void	builtin_cd(char **cmd, t_shell *sh);
 int	update_env_var(t_env *env_list, char *key, char *value);
+void	builtin_echo(char **cmd, t_shell *sh);
 
 //PARSER
 t_ast	*create_node(t_node_type type);

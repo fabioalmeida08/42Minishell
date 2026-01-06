@@ -26,7 +26,7 @@ static void update_work_dirs(t_shell *sh, char *old_pwd)
 	update_env_var(sh->env_list, "PWD", cwd);
 }
 
-void	change_home(t_shell *sh)
+bool	change_home(t_shell *sh)
 {
 	char *home_dir;
 	char	*cwd;
@@ -44,29 +44,10 @@ void	change_home(t_shell *sh)
 		update_work_dirs(sh, cwd);
 		sh->exit_status = 0;
 	}
+	return (true);
 }
 
-void	change_old_pwd(t_shell *sh)
-{
-	char *old_pwd;
-	char *cwd;
 
-	cwd = get_env_value(sh->env_list, "PWD");
-	old_pwd = get_env_value(sh->env_list, "OLDPWD");
-
-	if (chdir(old_pwd) != 0)
-	{
-		ft_putstr_fd("minishell: cd: cannot find old pwd dir", 2);
-		sh->exit_status = 1;
-	}
-	else
-	{
-		update_work_dirs(sh, cwd);
-		sh->exit_status = 0;
-	}
-}
-
-//TODO: reproduzir o comportamento de "cd" "cd -" "cd ~"
 void	builtin_cd(char **cmd, t_shell *sh)
 {
 	char	*target_dir;
@@ -78,7 +59,7 @@ void	builtin_cd(char **cmd, t_shell *sh)
 	{
 		change_home(sh);
 		return ;
-  }
+	}
 	target_dir = cmd[1];
 	if (chdir(target_dir) != 0)
 	{

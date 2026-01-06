@@ -6,7 +6,7 @@
 /*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/10 16:09:12 by bolegari          #+#    #+#             */
-/*   Updated: 2026/01/05 16:53:26 by fabialme         ###   ########.fr       */
+/*   Updated: 2026/01/06 14:56:07 by fabialme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,15 @@ static void	fill_builtins(t_builtin *b)
 	b[3].func = builtin_unset;
 	b[4].name = "cd";
 	b[4].func = builtin_cd;
-	b[5].name = NULL;
-	b[5].func = NULL;
+	b[5].name = "echo";
+	b[5].func = builtin_echo;
+	b[6].name = NULL;
+	b[6].func = NULL;
 }
 
 void	init_builtin(t_shell *sh)
 {
-	t_builtin	builtins[6];
+	t_builtin	builtins[7];
 	int			n;
 
 	fill_builtins(builtins);
