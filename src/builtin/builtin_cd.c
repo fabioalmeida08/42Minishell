@@ -26,6 +26,7 @@ static void update_work_dirs(t_shell *sh, char *old_pwd)
 	update_env_var(sh->env_list, "PWD", cwd);
 }
 
+//TODO: reproduzir o comportamento de "cd" "cd -" "cd ~"
 void	builtin_cd(char **cmd, t_shell *sh)
 {
     char    *target_dir;
