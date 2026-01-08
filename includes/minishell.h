@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 10:47:12 by fabialme          #+#    #+#             */
-/*   Updated: 2026/01/06 14:53:41 by fabialme         ###   ########.fr       */
+/*   Updated: 2026/01/08 15:17:53 by fabialme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include "../libft/includes/libft.h"
+# include <fcntl.h>
 
 typedef enum e_token_type
 {
@@ -140,7 +141,8 @@ int		remove_env_var(t_env **env_list, char *key);
 
 //SIMPLE EXECVE
 void	execute_cmd(t_ast *ast, t_shell *sh);
-void	execve_cmd(char **input, t_shell *sh);
+// void	execve_cmd(char **input, t_shell *sh);
+void	execve_cmd(t_ast *ast, t_shell *sh);
 void	execute_pipe(t_ast *ast, t_shell *sh);
 void	execute_ast(t_ast *ast, t_shell *sh);
 
@@ -151,6 +153,8 @@ char	*search_in_paths(char **paths, char *cmd);
 char	*find_path(char *cmd, t_shell *sh);
 void	exec_child(char *path, char **input, t_shell *sh);
 void	exec_parent(pid_t pid, t_shell *sh);
+int	check_redirections(t_ast *node);
+void	execute_builtin_with_redir(t_ast *ast, t_shell *sh);
 //BUILTIN
 void	init_builtin(t_shell *sh);
 int		is_builtin(char **cmd, t_shell *sh);
