@@ -6,7 +6,7 @@
 /*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 10:47:12 by fabialme          #+#    #+#             */
-/*   Updated: 2026/01/06 12:10:45 by bolegari         ###   ########.fr       */
+/*   Updated: 2026/01/08 14:33:08 by bolegari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ typedef struct s_redirect
 {
 	t_redir_type		type;
 	char				*target;
-	bool				expand;
 	int					fd;
 	struct s_redirect	*next;
 }	t_redirect;
@@ -174,6 +173,9 @@ t_ast	*parser_cmd(t_token *start, t_token *end, t_shell *sh);
 void	syntax_error(t_token *token, t_shell *sh);
 void	free_ast(t_ast *node);
 void	free_cmd(t_redirect *redir, char **args);
+
+//EXPANDER
+void	expand_ast(t_ast *node, t_shell *sh);
 
 //DEBUG
 void	print_ast(t_ast *node, int depth);

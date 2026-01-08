@@ -58,7 +58,6 @@ void	handle_redirection(t_ast *node, t_token *redir, t_token *target)
 	redir_node->type = token_to_redir(redir->type);
 	redir_node->target = ft_strdup(target->value);
 	redir_node->next = NULL;
-	redir_node->expand = NULL;
 	redir_node->fd = -1;
 	add_redir(node, redir_node);
 }
