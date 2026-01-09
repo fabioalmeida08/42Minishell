@@ -12,65 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-// int	check_redirections(t_ast *node)
-// {
-// 	t_redirect	*tmp;
-// 	int			fd;
-//
-// 	tmp = node->redirs;
-// 	while (tmp)
-// 	{
-// 		fd = -1;
-// 		// --- 1. ABRE O ARQUIVO COM AS FLAGS CERTAS ---
-// 		if (tmp->type == REDIR_IN) // Input <
-// 		{
-// 			// Abre APENAS para leitura. O arquivo PRECISA existir.
-// 			fd = open(tmp->target, O_RDONLY);
-// 		}
-// 		else if (tmp->type == REDIR_OUT) // Output >
-// 		{
-// 			fd = open(tmp->target, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-// 		}
-// 		else if (tmp->type == REDIR_APPEND) // Append >>
-// 		{
-// 			fd = open(tmp->target, O_WRONLY | O_CREAT | O_APPEND, 0644);
-// 		}
-//
-// 		// --- 2. VERIFICA ERROS DE ABERTURA ---
-// 		if (fd == -1)
-// 		{
-// 			ft_putstr_fd("minishell: ", 2);
-// 			perror(tmp->target); // Ex: "No such file or directory"
-// 			return (-1);
-// 		}
-//
-// 		// --- 3. FAZ O DUP2 (A TROCA DE PORTAS) ---
-// 		if (tmp->type == REDIR_IN)
-// 		{
-// 			// Se for Input, trocamos o STDIN (0) pelo arquivo
-// 			if (dup2(fd, STDIN_FILENO) == -1)
-// 			{
-// 				perror("minishell: dup2");
-// 				close(fd);
-// 				return (-1);
-// 			}
-// 		}
-// 		else // Para > e >>
-// 		{
-// 			// Se for Output, trocamos o STDOUT (1) pelo arquivo
-// 			if (dup2(fd, STDOUT_FILENO) == -1)
-// 			{
-// 				perror("minishell: dup2");
-// 				close(fd);
-// 				return (-1);
-// 			}
-// 		}
-//
-// 		close(fd); // Fecha o original, pois o dup2 já duplicou
-// 		tmp = tmp->next;
-// 	}
-// 	return (0);
-// }
 int	check_redirections(t_ast *node)
 {
 	t_redirect	*tmp;
@@ -80,44 +21,103 @@ int	check_redirections(t_ast *node)
 	while (tmp)
 	{
 		fd = -1;
+		// --- 1. ABRE O ARQUIVO COM AS FLAGS CERTAS ---
 		if (tmp->type == REDIR_IN) // Input <
 		{
 			// Abre APENAS para leitura. O arquivo PRECISA existir.
 			fd = open(tmp->target, O_RDONLY);
 		}
-		if (tmp->type == REDIR_OUT) // Caso do >
+		else if (tmp->type == REDIR_OUT) // Output >
 		{
-			// O_TRUNC = Sobrescreve
-			// O_CREAT = Cria se não existir
-			// O_WRONLY = Apenas escrita
-			// 0644 = Permissões de leitura/escrita
 			fd = open(tmp->target, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		}
 		else if (tmp->type == REDIR_APPEND) // Append >>
 		{
 			fd = open(tmp->target, O_WRONLY | O_CREAT | O_APPEND, 0644);
 		}
-		// Aqui você adicionaria else if (tmp->type == REDIR_APPEND) ...
 
+		// --- 2. VERIFICA ERROS DE ABERTURA ---
 		if (fd == -1)
 		{
 			ft_putstr_fd("minishell: ", 2);
-			perror(tmp->target);
-			return (-1); // Erro ao abrir arquivo
-		}
-
-		// Redireciona o FD do arquivo para o STDOUT (1)
-		if (dup2(fd, STDOUT_FILENO) == -1)
-		{
-			perror("minishell: dup2");
-			close(fd);
+			perror(tmp->target); // Ex: "No such file or directory"
 			return (-1);
 		}
-		close(fd); // Não precisamos mais do fd original, o 1 já aponta para o arquivo
+
+		// --- 3. FAZ O DUP2 (A TROCA DE PORTAS) ---
+		if (tmp->type == REDIR_IN)
+		{
+			// Se for Input, trocamos o STDIN (0) pelo arquivo
+			if (dup2(fd, STDIN_FILENO) == -1)
+			{
+				perror("minishell: dup2");
+				close(fd);
+				return (-1);
+			}
+		}
+		else // Para > e >>
+		{
+			// Se for Output, trocamos o STDOUT (1) pelo arquivo
+			if (dup2(fd, STDOUT_FILENO) == -1)
+			{
+				perror("minishell: dup2");
+				close(fd);
+				return (-1);
+			}
+		}
+
+		close(fd); // Fecha o original, pois o dup2 já duplicou
 		tmp = tmp->next;
 	}
 	return (0);
 }
+// int	check_redirections(t_ast *node)
+// {
+// 	t_redirect	*tmp;
+// 	int			fd;
+//
+// 	tmp = node->redirs;
+// 	while (tmp)
+// 	{
+// 		fd = -1;
+// 		if (tmp->type == REDIR_IN) // Input <
+// 		{
+// 			// Abre APENAS para leitura. O arquivo PRECISA existir.
+// 			fd = open(tmp->target, O_RDONLY);
+// 		}
+// 		if (tmp->type == REDIR_OUT) // Caso do >
+// 		{
+// 			// O_TRUNC = Sobrescreve
+// 			// O_CREAT = Cria se não existir
+// 			// O_WRONLY = Apenas escrita
+// 			// 0644 = Permissões de leitura/escrita
+// 			fd = open(tmp->target, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+// 		}
+// 		else if (tmp->type == REDIR_APPEND) // Append >>
+// 		{
+// 			fd = open(tmp->target, O_WRONLY | O_CREAT | O_APPEND, 0644);
+// 		}
+// 		// Aqui você adicionaria else if (tmp->type == REDIR_APPEND) ...
+//
+// 		if (fd == -1)
+// 		{
+// 			ft_putstr_fd("minishell: ", 2);
+// 			perror(tmp->target);
+// 			return (-1); // Erro ao abrir arquivo
+// 		}
+//
+// 		// Redireciona o FD do arquivo para o STDOUT (1)
+// 		if (dup2(fd, STDOUT_FILENO) == -1)
+// 		{
+// 			perror("minishell: dup2");
+// 			close(fd);
+// 			return (-1);
+// 		}
+// 		close(fd); // Não precisamos mais do fd original, o 1 já aponta para o arquivo
+// 		tmp = tmp->next;
+// 	}
+// 	return (0);
+// }
 
 void	execute_builtin_with_redir(t_ast *ast, t_shell *sh)
 {

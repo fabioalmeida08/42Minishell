@@ -28,13 +28,14 @@ void	execve_cmd(t_ast *ast, t_shell *sh)
 
 					// Limpa memória e sai se falhar
 				// 2. Busca o caminho e executa
-			path = find_path(ast->args[0], sh);
-			if (execve(path, ast->args, sh->envp) == -1)
-			{
-					perror("execve");
-			//TODO: exit é melhor opcao agora mesmo
-					exit(127);
-			}
+		path = find_path(ast->args[0], sh);
+		if (execve(path, ast->args, sh->envp) == -1)
+		{
+				perror("execve");
+		//TODO: exit é melhor opcao agora mesmo?
+				exit(127);
+			printf("erro");
+		}
 	}
     // Processo Pai apenas espera
 	waitpid(pid, &sh->exit_status, 0);

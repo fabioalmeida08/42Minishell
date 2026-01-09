@@ -80,10 +80,10 @@ void	interactive_mode(t_shell *sh)
 			free(input);
 			continue ;
 		}
-		// print_ast(sh->head_ast, 1);
 		execute_ast(sh->head_ast, sh);
 		free_internal_use_structs(sh);
 		free(input);
+		printf("LAST EXIT CODE = %d\n", sh->exit_status);
   }
   free_all_structs(sh);
 }
