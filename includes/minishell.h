@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 10:47:12 by fabialme          #+#    #+#             */
-/*   Updated: 2026/01/08 14:33:08 by bolegari         ###   ########.fr       */
+/*   Updated: 2026/01/13 15:53:57 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,13 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include "../libft/includes/libft.h"
+
+typedef enum e_quote
+{
+	Q_NONE,
+	Q_SINGLE,
+	Q_DOUBLE
+}	t_quote;
 
 typedef enum e_token_type
 {
@@ -176,6 +183,9 @@ void	free_cmd(t_redirect *redir, char **args);
 
 //EXPANDER
 void	expand_ast(t_ast *node, t_shell *sh);
+char	**expand_word(char *str, t_shell *sh);
+char	*expand_and_remove_quotes(char *str, t_shell *sh, bool *can_split);
+char	*expand_redir_target(char *target, t_shell *sh, bool *error);
 
 //DEBUG
 void	print_ast(t_ast *node, int depth);

@@ -63,7 +63,10 @@ DEBUGING_SRC := print_tokens.c \
 
 EXEC_SRC := exec_pipe.c
 
-EXPANDER_SRC := expand_ast.c
+EXPANDER_SRC := expand_ast.c \
+				expand_word.c \
+				expand_redir_target.c \
+				expander.c
 
 SRCS := $(addprefix $(SRCS_DIR)/, $(SRCS))
 LEXER_SRC := $(addprefix $(LEXER_DIR)/, $(LEXER_SRC))
