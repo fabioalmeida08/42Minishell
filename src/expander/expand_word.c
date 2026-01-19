@@ -14,22 +14,10 @@
 
 char	**expand_word(char *str, t_shell *sh)
 {
-	char	**res;
-	char	*expanded;
-	bool	can_split;
+	char	**args;
 
-	can_split = false;
-	expanded = expand_and_remove_quotes(str, sh, &can_split);
-	if (can_split)
-	{
-		res = ft_split(expanded, ' ');
-		free(expanded);
-	}
-	else
-	{
-		res = ft_calloc(2, sizeof(char *));
-		res[0] = expanded;
-		res[1] = NULL;
-	}
-	return (res);
+	args = ft_calloc(1, sizeof(char *));
+	args[0] = NULL;
+	expand_and_remove_quotes(str, sh, &args);
+	return (args);
 }

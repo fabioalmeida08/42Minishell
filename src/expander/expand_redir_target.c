@@ -14,24 +14,19 @@
 
 char	*expand_redir_target(char *target, t_shell *sh, bool *error)
 {
-	char	*expanded;
-	bool	can_split;
-	char	**split;
+	char	**expanded;
+	char	*res;
 
 	*error = false;
-	can_split = false;
-	expanded = expand_and_remove_quotes(target, sh, &can_split);
-	if (!can_split)
-		return (expanded);
-	split = ft_split(expanded, ' ');
-	free(expanded);
-	if (!split || !split[0] || split[1])
+	expanded = ft_calloc(1, sizeof(char *));
+	expanded[0] = NULL;
+	expand_and_remove_quotes(target, sh, &expanded);
+	if (!expanded || !expanded[0] || expanded[1])
 	{
 		*error = true;
-		free_envp(split);
+		free_envp(expanded);
 		return (NULL);
 	}
-	expanded = ft_strdup(split[0]);
-	free_envp(split);
-	return (expanded);
+	res = ft_strdup(expanded[0]);
+	return (res);
 }

@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 11:18:58 by bolegari          #+#    #+#             */
-/*   Updated: 2026/01/15 17:05:54 by marvin           ###   ########.fr       */
+/*   Updated: 2026/01/18 21:32:48 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,9 +98,7 @@ void	expand_ast(t_ast *node, t_shell *sh)
 		return ;
 	if (node->type == NODE_CMD)
 	{
-		ft_printf("ARGS LENS INICIAL = %d\n", args_len(node->args));
 		node->args = expand_args(node->args, sh);
-		ft_printf("ARGS LENS FINAL = %d\n", args_len(node->args));
 		expand_redir(node->redirs, sh);
 	}
 	expand_ast(node->left, sh);
