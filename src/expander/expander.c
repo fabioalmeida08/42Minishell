@@ -12,53 +12,6 @@
 
 #include "../includes/minishell.h"
 
-static char	*ft_charjoin_free(char *s, char c)
-{
-	char	*new;
-	size_t	len;
-
-	if (!s)
-	{
-		new = malloc(2);
-		new[0] = c;
-		new[1] = '\0';
-		return (new);
-	}
-	len = ft_strlen(s);
-	new = malloc(len + 2);
-	if (!new)
-		return (NULL);
-	ft_memcpy(new, s, len);
-	new[len] = c;
-	new[len + 1] = '\0';
-	free(s);
-	return (new);
-}
-
-static char	*ft_strjoin_free(char *s1, char *s2)
-{
-	char	*new;
-	size_t	len1;
-	size_t	len2;
-
-	if (!s1 && !s2)
-		return (NULL);
-	if (!s1)
-		return (ft_strdup(s2));
-	if (!s2)
-		return (s1);
-	len1 = ft_strlen(s1);
-	len2 = ft_strlen(s2);
-	new = malloc(len1 + len2 + 1);
-	if (!new)
-		return (NULL);
-	ft_memcpy(new, s1, len1);
-	ft_memcpy(new + len1, s2, len2);
-	new[len1 + len2] = '\0';
-	free(s1);
-	return (new);
-}
-
 static char	*expand_var(char *str, int *i, t_shell *sh)
 {
 	char	*name;
@@ -104,15 +57,43 @@ static bool	state_updater(char c, t_quote *state)
 	return (false);
 }
 
-static void	append_one(char ***args, char *arg)
+static void	handle_space(char **current_arg, char ***args, int *i)
 {
-	char	*tmp[2];
+	if (*current_arg)
+	{
+		append_one(args, *current_arg);
+		*current_arg = NULL;
+	}
+	(*i)++;
+}
 
-	if (!arg)
-		return ;
-	tmp[0] = arg;
-	tmp[1] = NULL;
-	append_all(args, tmp);
+static void	handle_dollar(char **current_arg, char ***args,
+	t_quote state, char *expanded_var)
+{
+	int		i;
+	char	**splited_var;
+
+	i = 1;
+	if (state == Q_DOUBLE)
+		*current_arg = ft_strjoin_free(*current_arg, expanded_var);
+	else
+	{
+		splited_var = ft_split(expanded_var, ' ');
+		if (splited_var && splited_var[0])
+		{
+			*current_arg = ft_strjoin_free(*current_arg, splited_var[0]);
+			append_one(args, *current_arg);
+			*current_arg = NULL;
+			while (splited_var[i])
+			{
+				append_one(args, ft_strdup(splited_var[i]));
+				i++;
+			}
+		}
+		if (splited_var)
+			free_envp(splited_var);
+	}
+	free(expanded_var);
 }
 
 void	expand_and_remove_quotes(char *str, t_shell *sh, char ***args)
@@ -120,61 +101,25 @@ void	expand_and_remove_quotes(char *str, t_shell *sh, char ***args)
 	int		i;
 	t_quote	state;
 	char	*current_arg;
-	bool	arg_started;
+	char	*expanded_var;
 
 	i = 0;
 	state = Q_NONE;
 	current_arg = NULL;
-	arg_started = false;
 	while (str[i])
 	{
 		if (state_updater(str[i], &state))
-		{
-			arg_started = true;
 			i++;
-		}
 		else if (str[i] == ' ' && state == Q_NONE)
-		{
-			if (arg_started)
-			{
-				append_one(args, current_arg);
-				current_arg = NULL;
-				arg_started = false;
-			}
-			i++;
-		}
+			handle_space(&current_arg, args, &i);
 		else if (str[i] == '$' && state != Q_SINGLE && str[i + 1])
 		{
-			char *expanded_var = expand_var(str, &i, sh);
-			if (state == Q_DOUBLE)
-				current_arg = ft_strjoin_free(current_arg, expanded_var);
-			else
-			{
-				char **splited_var = ft_split(expanded_var, ' ');
-				if (splited_var && splited_var[0])
-				{
-					current_arg = ft_strjoin_free(current_arg, splited_var[0]);
-					append_one(args, current_arg);
-					current_arg = NULL;
-					int j = 0;
-					while (splited_var[++j])
-						append_one(args, ft_strdup(splited_var[j]));
-				}
-				if (splited_var)
-					free_envp(splited_var);
-			}
-			free(expanded_var);
-			arg_started = true;
+			expanded_var = expand_var(str, &i, sh);
+			handle_dollar(&current_arg, args, state, expanded_var);
 		}
-		else 
-		{
+		else
 			current_arg = ft_charjoin_free(current_arg, str[i++]);
-			arg_started = true;
-		}
 	}
-	if (arg_started)
-	{
+	if (current_arg)
 		append_one(args, current_arg);
-		current_arg = NULL;
-	}
 }

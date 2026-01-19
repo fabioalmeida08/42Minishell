@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 10:47:12 by fabialme          #+#    #+#             */
-/*   Updated: 2026/01/18 21:33:44 by marvin           ###   ########.fr       */
+/*   Updated: 2026/01/19 15:03:49 by bolegari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,11 +182,16 @@ void	free_ast(t_ast *node);
 void	free_cmd(t_redirect *redir, char **args);
 
 //EXPANDER
-void	expand_ast(t_ast *node, t_shell *sh);
+bool	expand_ast(t_ast *node, t_shell *sh);
 char	**expand_word(char *str, t_shell *sh);
 void	expand_and_remove_quotes(char *str, t_shell *sh, char ***args);
 void	append_all(char ***dst, char **src);
 char	*expand_redir_target(char *target, t_shell *sh, bool *error);
+int		args_len(char **args);
+void	append_all(char ***dst, char **src);
+char	*ft_charjoin_free(char *s, char c);
+char	*ft_strjoin_free(char *s1, char *s2);
+void	append_one(char ***args, char *arg);
 
 //DEBUG
 void	print_ast(t_ast *node, int depth);
