@@ -12,44 +12,37 @@
 
 #include "../../includes/minishell.h"
 
-void execute_pipe(t_ast *ast, t_shell *sh)
+static void	exec_childs(t_ast *node, int *fd, int dir, t_shell *sh)
 {
-    int     fd[2];
-    pid_t   pid_left;
-    pid_t   pid_right;
-    int     status_right;
+	if (dir == 1)
+		dup2(fd[1], STDOUT_FILENO);
+	else
+		dup2(fd[0], STDIN_FILENO);
+	close(fd[0]);
+	close(fd[1]);
+	execute_ast(node, sh);
+	exit(sh->exit_status);
+}
 
-    pipe(fd);
+void	execute_pipe(t_ast *ast, t_shell *sh)
+{
+	int		fd[2];
+	pid_t	pid[2];
+	int		status;
 
-    pid_left = fork();
-    if (pid_left == 0)
-    {
-        dup2(fd[1], STDOUT_FILENO);
-        close(fd[0]);
-        close(fd[1]);
-        execute_ast(ast->left, sh);
-        exit(sh->exit_status);
-    }
-
-    pid_right = fork();
-    if (pid_right == 0)
-    {
-        dup2(fd[0], STDIN_FILENO);
-        close(fd[1]);
-        close(fd[0]);
-        execute_ast(ast->right, sh);
-        exit(sh->exit_status);
-    }
-
-    close(fd[0]);
-    close(fd[1]);
-
-    waitpid(pid_left, NULL, 0);
-    waitpid(pid_right, &status_right, 0);
-
-    if (WIFEXITED(status_right))
-        sh->exit_status = WEXITSTATUS(status_right);
-    else if (WIFSIGNALED(status_right))
-        sh->exit_status = 128 + WTERMSIG(status_right);
-		printf("\nexit status do ultimo comando = %d\n",sh->exit_status);
+	pipe(fd);
+	pid[0] = fork();
+	if (pid[0] == 0)
+		exec_childs(ast->left, fd, 1, sh);
+	pid[1] = fork();
+	if (pid[1] == 0)
+		exec_childs(ast->right, fd, 0, sh);
+	close(fd[0]);
+	close(fd[1]);
+	waitpid(pid[0], NULL, 0);
+	waitpid(pid[1], &status, 0);
+	if (WIFEXITED(status))
+		sh->exit_status = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+		sh->exit_status = 128 + WTERMSIG(status);
 }

@@ -56,10 +56,14 @@ BUILTIN_SRC :=	builtin_utils.c \
 				builtin_pwd.c \
 				builtin_export.c \
 				builtin_unset.c \
+				builtin_cd.c \
+				builtin_echo.c \
 
 DEBUGING_SRC := print_tokens.c \
 				print_ast.c
-EXEC_SRC := exec_pipe.c
+
+EXEC_SRC := exec_pipe.c \
+						redirections.c 
 
 SRCS := $(addprefix $(SRCS_DIR)/, $(SRCS))
 LEXER_SRC := $(addprefix $(LEXER_DIR)/, $(LEXER_SRC))

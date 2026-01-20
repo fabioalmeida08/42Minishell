@@ -6,7 +6,7 @@
 /*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/10 16:08:57 by bolegari          #+#    #+#             */
-/*   Updated: 2025/12/10 16:08:57 by bolegari         ###   ########.fr       */
+/*   Updated: 2026/01/06 14:56:49 by fabialme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,5 +25,5 @@ void	builtin_env(char **cmd, t_shell *sh)
 		printf("%s\n", envp_recreated[i]);
 		i++;
 	}
-	free(envp_recreated);
+	free_envp(envp_recreated);
 }
