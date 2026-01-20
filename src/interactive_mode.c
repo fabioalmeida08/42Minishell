@@ -15,9 +15,9 @@
 void	execute_cmd(t_ast *ast, t_shell *sh)
 {
 	if (is_builtin(ast->args, sh))
-		exec_builtin(ast->args, sh);
+		execute_builtin_with_redir(ast, sh);
 	else
-		execve_cmd(ast->args, sh);
+		execve_cmd(ast, sh); 
 }
 
 void	execute_ast(t_ast *ast, t_shell *sh)
@@ -69,11 +69,12 @@ void	interactive_mode(t_shell *sh)
 		}
 		print_ast(sh->head_ast, 1);
 		if (!expand_ast(sh->head_ast, sh))
+		  print_ast(sh->head_ast, 0);
+		if (!sh->head_tokens || !sh->head_ast)
 		{
 			free_internal_use_structs(sh);
 			continue ;
 		}
-		print_ast(sh->head_ast, 1);
 		execute_ast(sh->head_ast, sh);
 		free_internal_use_structs(sh);
 	}

@@ -54,11 +54,8 @@ t_token	*ft_tokenize(t_shell *sh)
 		lexer_syntax_error(tokens, sh);
 		return (NULL);
 	}
-	tokens = ft_strtok(sh->input, sh);
-	if (tokens)
-		print_tokens(tokens);
+	tokens = ft_strtok(str, sh);
 	if (!tokens)
 		return (NULL);
-	printf("LEXER SYNTAX OK !!!\n");
 	return (tokens);
 }

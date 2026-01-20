@@ -56,12 +56,15 @@ BUILTIN_SRC :=	builtin_utils.c \
 				builtin_env.c \
 				builtin_pwd.c \
 				builtin_export.c \
-				builtin_unset.c
+				builtin_unset.c \
+				builtin_cd.c \
+				builtin_echo.c \
 
 DEBUGING_SRC := print_tokens.c \
 				print_ast.c
 
-EXEC_SRC := exec_pipe.c
+EXEC_SRC := exec_pipe.c \
+						redirections.c 
 
 EXPANDER_SRC := expand_ast.c \
 				expand_word.c \
