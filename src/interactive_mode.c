@@ -14,12 +14,9 @@
 
 void	execute_cmd(t_ast *ast, t_shell *sh)
 {
-	// Se for builtin, usa a lógica de Salvar/Restaurar
 	if (is_builtin(ast->args, sh))
 		execute_builtin_with_redir(ast, sh);
 	else
-		// Se for externo, passa o AST inteiro para lidar com o fork
-        // Lembre-se de atualizar o protótipo de execve_cmd no header!
 		execve_cmd(ast, sh); 
 }
 
@@ -68,6 +65,7 @@ void	interactive_mode(t_shell *sh)
 		add_history(input);
 		sh->head_tokens = ft_tokenize(input, sh);
 		sh->head_ast = parser_logical(sh->head_tokens, NULL, sh);
+		print_ast(sh->head_ast, 0);
 		if (!sh->head_tokens || !sh->head_ast)
 		{
 			free(input);

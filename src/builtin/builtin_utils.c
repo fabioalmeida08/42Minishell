@@ -76,7 +76,6 @@ void	exec_builtin(char **cmd, t_shell *sh)
 	int	i;
 
 	i = 0;
-	printf("BUILTIN !!! \n");
 	while (sh->g_builtins[i].name)
 	{
 		if (ft_strcmp(cmd[0], sh->g_builtins[i].name))

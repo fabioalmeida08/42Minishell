@@ -41,24 +41,3 @@ void	execve_cmd(t_ast *ast, t_shell *sh)
 	waitpid(pid, &sh->exit_status, 0);
     // ... trata o exit status ...
 }
-// void	execve_cmd(char **input, t_shell *sh)
-// {
-// 	char	*path;
-// 	pid_t	pid;
-//
-// 	sh->exit_status = 127;
-// 	path = find_path(input[0], sh);
-// 	if (!path)
-// 		return ;
-// 	pid = fork();
-// 	if (pid < 0)
-// 	{
-// 		perror("fork");
-// 		free(path);
-// 		return ;
-// 	}
-// 	if (pid == 0)
-// 		exec_child(path, input, sh);
-// 	exec_parent(pid, sh);
-// 	free(path);
-// }
