@@ -54,7 +54,7 @@ t_token	*ft_tokenize(t_shell *sh)
 		lexer_syntax_error(tokens, sh);
 		return (NULL);
 	}
-	tokens = ft_strtok(str, sh);
+	tokens = ft_strtok(sh->input, sh);
 	if (!tokens)
 		return (NULL);
 	return (tokens);
