@@ -22,13 +22,6 @@ void	execute_cmd(t_ast *ast, t_shell *sh)
         // Lembre-se de atualizar o protótipo de execve_cmd no header!
 		execve_cmd(ast, sh); 
 }
-// void	execute_cmd(t_ast *ast, t_shell *sh)
-// {
-// 	if (is_builtin(ast->args, sh))
-// 		exec_builtin(ast->args, sh);
-// 	else
-// 		execve_cmd(ast->args, sh);
-// }
 
 void	execute_ast(t_ast *ast, t_shell *sh)
 {
@@ -83,7 +76,6 @@ void	interactive_mode(t_shell *sh)
 		execute_ast(sh->head_ast, sh);
 		free_internal_use_structs(sh);
 		free(input);
-		printf("LAST EXIT CODE = %d\n", sh->exit_status);
   }
   free_all_structs(sh);
 }

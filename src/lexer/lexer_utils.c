@@ -55,10 +55,7 @@ t_token	*ft_tokenize(const char *str, t_shell *sh)
 		return (NULL);
 	}
 	tokens = ft_strtok(str, sh);
-	if (tokens)
-		print_tokens(tokens);
 	if (!tokens)
 		return (NULL);
-	printf("LEXER SYNTAX OK !!!\n");
 	return (tokens);
 }
