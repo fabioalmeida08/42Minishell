@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/19 14:23:44 by bolegari          #+#    #+#             */
-/*   Updated: 2026/01/19 15:58:47 by bolegari         ###   ########.fr       */
+/*   Updated: 2026/01/20 15:46:30 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,8 @@ char	*ft_charjoin_free(char *s, char c)
 	if (!s)
 	{
 		new = malloc(2);
+		if (!new)
+			return (NULL);
 		new[0] = c;
 		new[1] = '\0';
 		return (new);

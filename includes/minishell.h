@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 10:47:12 by fabialme          #+#    #+#             */
-/*   Updated: 2026/01/19 15:03:49 by bolegari         ###   ########.fr       */
+/*   Updated: 2026/01/20 15:20:33 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ typedef struct s_redirect
 {
 	t_redir_type		type;
 	char				*target;
+	bool				expand;
 	int					fd;
 	struct s_redirect	*next;
 }	t_redirect;
@@ -192,6 +193,7 @@ void	append_all(char ***dst, char **src);
 char	*ft_charjoin_free(char *s, char c);
 char	*ft_strjoin_free(char *s1, char *s2);
 void	append_one(char ***args, char *arg);
+void	normalize_heredoc(t_redirect *redirs);
 
 //DEBUG
 void	print_ast(t_ast *node, int depth);

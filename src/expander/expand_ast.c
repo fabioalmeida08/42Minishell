@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_ast.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 11:18:58 by bolegari          #+#    #+#             */
-/*   Updated: 2026/01/19 14:25:46 by bolegari         ###   ########.fr       */
+/*   Updated: 2026/01/20 15:24:39 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,15 +39,20 @@ static bool	expand_redir(t_redirect *redirs, t_shell *sh)
 
 	while (redirs)
 	{
-		new = expand_redir_target(redirs->target, sh, &error);
-		if (error)
+		if (redirs->type != REDIR_HEREDOC)
 		{
-			sh->exit_status = 1;
-			ft_putendl_fd("Minishell> ambiguous redirect", 2);
-			return (false);
+			new = expand_redir_target(redirs->target, sh, &error);
+			if (error)
+			{
+				sh->exit_status = 1;
+				ft_putendl_fd("Minishell> ambiguous redirect", 2);
+				return (false);
+			}
+			free(redirs->target);
+			redirs->target = new;
 		}
-		free(redirs->target);
-		redirs->target = new;
+		else
+			normalize_heredoc(redirs);
 		redirs = redirs->next;
 	}
 	return (true);

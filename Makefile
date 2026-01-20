@@ -65,7 +65,7 @@ EXEC_SRC := exec_pipe.c
 
 EXPANDER_SRC := expand_ast.c \
 				expand_word.c \
-				expand_redir_target.c \
+				expand_redirs.c \
 				expander.c \
 				expander_utils.c \
 
