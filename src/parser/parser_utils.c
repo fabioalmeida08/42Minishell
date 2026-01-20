@@ -16,27 +16,27 @@ void	syntax_error(t_token *tok, t_shell *sh)
 {
 	ft_putstr_fd("syntax error near token ", 2);
 	if (tok && tok->value)
-		ft_putstr_fd(tok->value, 2);
+		ft_putendl_fd(tok->value, 2);
 	else if (tok)
 	{
 		if (tok->type == TK_PAREN_OPEN)
-			ft_putstr_fd("(\n", 2);
+			ft_putendl_fd("(", 2);
 		else if (tok->type == TK_PAREN_CLOSE)
-			ft_putstr_fd(")\n", 2);
+			ft_putendl_fd(")", 2);
 		else if (tok->type == TK_PIPE)
-			ft_putstr_fd("|\n", 2);
+			ft_putendl_fd("|", 2);
 		else if (tok->type == TK_REDIR_IN)
-			ft_putstr_fd("<\n", 2);
+			ft_putendl_fd("<", 2);
 		else if (tok->type == TK_REDIR_OUT)
-			ft_putstr_fd(">\n", 2);
+			ft_putendl_fd(">", 2);
 		else if (tok->type == TK_REDIR_APPEND)
-			ft_putstr_fd(">>\n", 2);
+			ft_putendl_fd(">>", 2);
 		else if (tok->type == TK_REDIR_HEREDOC)
-			ft_putstr_fd("<<\n", 2);
+			ft_putendl_fd("<<", 2);
 		else if (tok->type == TK_AND)
-			ft_putstr_fd("&&\n", 2);
+			ft_putendl_fd("&&", 2);
 		else if (tok->type == TK_OR)
-			ft_putstr_fd("||\n", 2);
+			ft_putendl_fd("||", 2);
 	}
 	sh->exit_status = 2;
 }
@@ -65,15 +65,13 @@ void	free_cmd(t_redirect *redir, char **args)
 	t_redirect	*tmp;
 	int			i;
 
-	if (!args || !redir)
-		return ;
-	i = 0;
-	while (args[i])
+	if (args)
 	{
-		free(args[i]);
-		i++;
+		i = 0;
+		while (args[i])
+			free(args[i++]);
+		free(args);
 	}
-	free(args);
 	while (redir)
 	{
 		tmp = redir->next;

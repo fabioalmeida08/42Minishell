@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   interactive_mode.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 14:32:35 by bolegari          #+#    #+#             */
-/*   Updated: 2025/12/29 17:54:42 by marvin           ###   ########.fr       */
+/*   Updated: 2026/01/19 14:19:22 by bolegari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ void	execute_ast(t_ast *ast, t_shell *sh)
 
 void	free_internal_use_structs(t_shell *sh)
 {
+	if (sh->input)
+		free(sh->input);
 	if (sh->head_ast)
 	{
 		free_ast(sh->head_ast);
@@ -52,28 +54,30 @@ void	free_all_structs(t_shell *sh)
 
 void	interactive_mode(t_shell *sh)
 {
-	char	*input;
-
 	while (1)
 	{
-		input = readline("Minishell> ");
-		if (input == NULL)
-		{
-			free(input);
+		sh->input = readline("Minishell> ");
+		if (sh->input == NULL)
 			break ;
-		}
-		add_history(input);
-		sh->head_tokens = ft_tokenize(input, sh);
+		add_history(sh->input);
+		sh->head_tokens = ft_tokenize(sh);
 		sh->head_ast = parser_logical(sh->head_tokens, NULL, sh);
-		print_ast(sh->head_ast, 0);
+		if (!sh->head_ast)
+		{
+			free_internal_use_structs(sh);
+			continue ;
+		}
+		print_ast(sh->head_ast, 1);
+		if (!expand_ast(sh->head_ast, sh))
+		  print_ast(sh->head_ast, 0);
 		if (!sh->head_tokens || !sh->head_ast)
 		{
-			free(input);
+			free_internal_use_structs(sh);
 			continue ;
 		}
 		execute_ast(sh->head_ast, sh);
 		free_internal_use_structs(sh);
-		free(input);
-  }
-  free_all_structs(sh);
+	}
+	rl_clear_history();
+	free_all_structs(sh);
 }

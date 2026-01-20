@@ -45,9 +45,10 @@ static void	print_cmd(t_ast *node, int depth)
 		i = 0;
 		while (i++ < depth + 1)
 			printf("  ");
-		printf("REDIR %s %s\n",
-			redir_type_str(redir->type),
-			redir->target);
+		if (redir->type == REDIR_HEREDOC)
+			printf("REDIR %s %s (expand:%d)\n", redir_type_str(redir->type), redir->target, redir->expand);
+		else
+			printf("REDIR %s %s\n", redir_type_str(redir->type), redir->target);
 		redir = redir->next;
 	}
 }

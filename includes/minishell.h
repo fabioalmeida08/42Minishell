@@ -24,6 +24,13 @@
 # include "../libft/includes/libft.h"
 # include <fcntl.h>
 
+typedef enum e_quote
+{
+	Q_NONE,
+	Q_SINGLE,
+	Q_DOUBLE
+}	t_quote;
+
 typedef enum e_token_type
 {
 	TK_WORD,
@@ -97,6 +104,7 @@ typedef struct s_token
 typedef struct s_shell
 {
 	char		**envp;
+	char		*input;
 	t_env		*env_list;
 	int			exit_status;
 	t_builtin	*g_builtins;
@@ -112,7 +120,7 @@ void	non_interactive_mode(void);
 t_token	*handle_operator(const char **str);
 t_token	*ft_strtok(const char *str, t_shell *sh);
 void	lexer_syntax_error(t_token *token, t_shell *sh);
-t_token	*ft_tokenize(const char *str, t_shell *sh);
+t_token	*ft_tokenize(t_shell *sh);
 t_token	*create_token(t_token_type type, char *value);
 void	add_token_back(t_token **head, t_token *new_token);
 void	ft_free_tokens(t_token *tokens);
@@ -138,6 +146,7 @@ char	*get_env_value(t_env *env_list, char *key);
 int		add_env_var(t_env **env_list, char *key, char *value);
 int		update_env_var(t_env *env_list, char *key, char *value);
 int		remove_env_var(t_env **env_list, char *key);
+void	update_shlvl(t_shell *shell_vars);
 
 //SIMPLE EXECVE
 void	execute_cmd(t_ast *ast, t_shell *sh);
@@ -179,6 +188,19 @@ t_ast	*parser_cmd(t_token *start, t_token *end, t_shell *sh);
 void	syntax_error(t_token *token, t_shell *sh);
 void	free_ast(t_ast *node);
 void	free_cmd(t_redirect *redir, char **args);
+
+//EXPANDER
+bool	expand_ast(t_ast *node, t_shell *sh);
+char	**expand_word(char *str, t_shell *sh);
+void	expand_and_remove_quotes(char *str, t_shell *sh, char ***args);
+void	append_all(char ***dst, char **src);
+char	*expand_redir_target(char *target, t_shell *sh, bool *error);
+int		args_len(char **args);
+void	append_all(char ***dst, char **src);
+char	*ft_charjoin_free(char *s, char c);
+char	*ft_strjoin_free(char *s1, char *s2);
+void	append_one(char ***args, char *arg);
+void	normalize_heredoc(t_redirect *redirs);
 
 //DEBUG
 void	print_ast(t_ast *node, int depth);
