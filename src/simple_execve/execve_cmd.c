@@ -12,24 +12,78 @@
 
 #include "../../includes/minishell.h"
 
+static char	*get_cmd_path(char *cmd, t_shell *sh)
+{
+	if (ft_strchr(cmd, '/'))
+	{
+		if (access(cmd, F_OK) == 0)
+			return (ft_strdup(cmd));
+		return (NULL);
+	}
+	return (find_path(cmd, sh));
+}
+
+static void	handle_cmd_not_found(char *cmd, t_shell *sh)
+{
+	ft_putstr_fd("minishell: ", 2);
+	ft_putstr_fd(cmd, 2);
+	ft_putstr_fd(": command not found\n", 2);
+	free_all_structs(sh);
+	exit(127);
+}
+
+static void	run_child_process(t_ast *ast, t_shell *sh)
+{
+	char	*path;
+
+	if (check_redirections(ast) == -1)
+	{
+		free_all_structs(sh);
+		exit(1);
+	}
+	path = get_cmd_path(ast->args[0], sh);
+	if (!path)
+		handle_cmd_not_found(ast->args[0], sh);
+	execve(path, ast->args, sh->envp);
+	perror("minishell: execve");
+	free(path);
+	free_all_structs(sh);
+	exit(126);
+}
+
+static void	update_exit_status(t_shell *sh, int status)
+{
+	if (WIFEXITED(status))
+		sh->exit_status = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+	{
+		sh->exit_status = 128 + WTERMSIG(status);
+		if (sh->exit_status == 130)
+			write(1, "\n", 1);
+		else if (sh->exit_status == 131)
+			ft_putstr_fd("Quit (core dumped)\n", 2);
+	}
+}
+
 void	execve_cmd(t_ast *ast, t_shell *sh)
 {
 	pid_t	pid;
-  char	*path;
+	int		status;
 
+	setup_execution_signals();
 	pid = fork();
-	if (pid == 0) 
+	if (pid == -1)
 	{
-		if (check_redirections(ast) == -1)
-			return ;
-		path = find_path(ast->args[0], sh);
-		// printf("\n path == %s",path);
-		// TODO: caso digitem um comando /bin/ls deve ser executado da mesma forma
-		if (execve(path, ast->args, sh->envp) == -1)
-		{
-			ft_printf("minishell: %s: command not found\n",ast->args[0]);
-			sh->exit_status = 127;
-		}
+		perror("minishell: fork");
+		setup_interactive_parent_signals();
+		return ;
 	}
-	waitpid(pid, &sh->exit_status, 0);
+	if (pid == 0)
+	{
+		setup_child_signals();
+		run_child_process(ast, sh);
+	}
+	waitpid(pid, &status, 0);
+	update_exit_status(sh, status);
+	setup_interactive_parent_signals();
 }
