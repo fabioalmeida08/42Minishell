@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+#include <unistd.h>
 
 static int	process_heredoc(char *delimiter)
 {
@@ -84,6 +85,7 @@ int	check_redirections(t_ast *node)
 	tmp = node->redirs;
 	while (tmp)
 	{
+		printf("entrei aqui no check redir ---\n");
 		fd = open_target(tmp);
 		if (fd == -1)
 			return (-1);
@@ -109,30 +111,41 @@ int	check_redirections(t_ast *node)
 void	execute_builtin_with_redir(t_ast *ast, t_shell *sh)
 {
 	int	saved_stdout;
+	int	saved_stdin;
 
-	if (!ft_strcmp(ast->args[0], "exit"))
+	// 1. OTIMIZAÇÃO E CORREÇÃO DO VALGRIND:
+	// Se não tem redirecionamentos, executa direto e retorna.
+	// Isso evita chamar dup/dup2 no 'exit' simples, eliminando o erro do Valgrind.
+	if (!ast->redirs)
 	{
-		// 1. Salva o STDOUT original (geralmente o terminal)
-		saved_stdout = dup(STDOUT_FILENO);
-		
-		// 2. Tenta aplicar os redirecionamentos
-		if (check_redirections(ast) == -1)
-		{
-			sh->exit_status = 1;
-			// Restaura e sai
-			dup2(saved_stdout, STDOUT_FILENO);
-			close(saved_stdout);
-			return ;
-		}
-
-		// 3. Executa o builtin (agora escrevendo no arquivo se tiver >)
 		exec_builtin(ast->args, sh);
-
-		// 4. Restaura o STDOUT original para o shell voltar ao normal
-		dup2(saved_stdout, STDOUT_FILENO);
-		close(saved_stdout);
-
+		return ;
 	}
-	else
-		exec_builtin(ast->args, sh);
+
+	// 2. Salva STDIN e STDOUT originais
+	// Necessário salvar STDIN também, pois builtins rodam no processo pai.
+	// Se mudarmos o STDIN aqui sem restaurar, o próximo comando do shell quebrará.
+	saved_stdout = dup(STDOUT_FILENO);
+	saved_stdin = dup(STDIN_FILENO);
+
+	// 3. Tenta aplicar os redirecionamentos
+	if (check_redirections(ast) == -1)
+	{
+		sh->exit_status = 1;
+		// Falhou (ex: arquivo não existe). Restaura e sai.
+		dup2(saved_stdout, STDOUT_FILENO);
+		dup2(saved_stdin, STDIN_FILENO);
+		close(saved_stdout);
+		close(saved_stdin);
+		return ;
+	}
+
+	// 4. Executa o builtin (com os FDs alterados)
+	exec_builtin(ast->args, sh);
+
+	// 5. Restaura STDIN e STDOUT para o terminal/estado original
+	dup2(saved_stdout, STDOUT_FILENO);
+	dup2(saved_stdin, STDIN_FILENO);
+	close(saved_stdout);
+	close(saved_stdin);
 }

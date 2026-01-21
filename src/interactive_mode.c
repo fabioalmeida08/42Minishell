@@ -67,7 +67,6 @@ void	interactive_mode(t_shell *sh)
 			free_internal_use_structs(sh);
 			continue ;
 		}
-		print_ast(sh->head_ast, 1);
 		if (!expand_ast(sh->head_ast, sh))
 		  print_ast(sh->head_ast, 0);
 		if (!sh->head_tokens || !sh->head_ast)

@@ -19,12 +19,12 @@ void	builtin_echo(char **cmd, t_shell *sh)
 		if (ft_strcmp(cmd[1], "-n") && cmd[2])
 		{
 			printf("%s",cmd[2]);
-			sh->exit_status = 1;
+			sh->exit_status = 0;
 		}
 		else
 		{
 			printf("%s\n",cmd[1]);
-			sh->exit_status = 1;
+			sh->exit_status = 0;
 		}
 	}
 }
