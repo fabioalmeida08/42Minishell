@@ -110,23 +110,29 @@ void	execute_builtin_with_redir(t_ast *ast, t_shell *sh)
 {
 	int	saved_stdout;
 
-	// 1. Salva o STDOUT original (geralmente o terminal)
-	saved_stdout = dup(STDOUT_FILENO);
-	
-	// 2. Tenta aplicar os redirecionamentos
-	if (check_redirections(ast) == -1)
+	if (!ft_strcmp(ast->args[0], "exit"))
 	{
-		sh->exit_status = 1;
-		// Restaura e sai
+		// 1. Salva o STDOUT original (geralmente o terminal)
+		saved_stdout = dup(STDOUT_FILENO);
+		
+		// 2. Tenta aplicar os redirecionamentos
+		if (check_redirections(ast) == -1)
+		{
+			sh->exit_status = 1;
+			// Restaura e sai
+			dup2(saved_stdout, STDOUT_FILENO);
+			close(saved_stdout);
+			return ;
+		}
+
+		// 3. Executa o builtin (agora escrevendo no arquivo se tiver >)
+		exec_builtin(ast->args, sh);
+
+		// 4. Restaura o STDOUT original para o shell voltar ao normal
 		dup2(saved_stdout, STDOUT_FILENO);
 		close(saved_stdout);
-		return ;
+
 	}
-
-	// 3. Executa o builtin (agora escrevendo no arquivo se tiver >)
-	exec_builtin(ast->args, sh);
-
-	// 4. Restaura o STDOUT original para o shell voltar ao normal
-	dup2(saved_stdout, STDOUT_FILENO);
-	close(saved_stdout);
+	else
+		exec_builtin(ast->args, sh);
 }

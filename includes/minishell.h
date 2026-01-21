@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 10:47:12 by fabialme          #+#    #+#             */
-/*   Updated: 2026/01/08 15:17:53 by fabialme         ###   ########.fr       */
+/*   Updated: 2026/01/21 09:45:18 by fabialme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,7 @@ typedef struct s_shell
 	t_builtin	*g_builtins;
 	t_token		*head_tokens;
 	t_ast		*head_ast;
+  bool	running;
 }	t_shell;
 
 //MINISHELL(MAIN)
@@ -175,6 +176,7 @@ void	builtin_unset(char **cmd, t_shell *sh);
 void	builtin_cd(char **cmd, t_shell *sh);
 int	update_env_var(t_env *env_list, char *key, char *value);
 void	builtin_echo(char **cmd, t_shell *sh);
+void	builtin_exit(char **cmd, t_shell *sh);
 
 //PARSER
 t_ast	*create_node(t_node_type type);
@@ -202,6 +204,7 @@ char	*ft_strjoin_free(char *s1, char *s2);
 void	append_one(char ***args, char *arg);
 void	normalize_heredoc(t_redirect *redirs);
 
+void	free_all_structs(t_shell *sh);
 //DEBUG
 void	print_ast(t_ast *node, int depth);
 void	print_tokens(t_token *tokens);

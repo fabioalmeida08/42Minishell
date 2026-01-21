@@ -23,6 +23,7 @@ int	main(int argc, char *argv[], char *envp[])
 	sh.input = NULL;
 	sh.head_tokens = NULL;
 	sh.head_ast = NULL;
+	sh.running = true;
 	if (isatty(STDIN_FILENO))
 	{
 		setup_interactive_parent_signals();
