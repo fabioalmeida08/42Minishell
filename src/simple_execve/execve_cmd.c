@@ -20,24 +20,16 @@ void	execve_cmd(t_ast *ast, t_shell *sh)
 	pid = fork();
 	if (pid == 0) 
 	{
-		// 1. Aplica redirecionamentos NO FILHO
 		if (check_redirections(ast) == -1)
-		{
-			exit(1);
-		}
-
-					// Limpa memória e sai se falhar
-				// 2. Busca o caminho e executa
+			return ;
 		path = find_path(ast->args[0], sh);
+		// printf("\n path == %s",path);
+		// TODO: caso digitem um comando /bin/ls deve ser executado da mesma forma
 		if (execve(path, ast->args, sh->envp) == -1)
 		{
-				perror("execve");
-		//TODO: exit é melhor opcao agora mesmo?
-				exit(127);
-			printf("erro");
+			ft_printf("minishell: %s: command not found\n",ast->args[0]);
+			sh->exit_status = 127;
 		}
 	}
-    // Processo Pai apenas espera
 	waitpid(pid, &sh->exit_status, 0);
-    // ... trata o exit status ...
 }
