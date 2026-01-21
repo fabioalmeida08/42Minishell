@@ -136,7 +136,7 @@ void	handle_redirection(t_ast *node, t_token *redir, t_token *target);
 void	handle_sigint(int sig);
 void	setup_interactive_parent_signals(void);
 void	setup_child_signals(void);
-
+void	setup_execution_signals(void);
 //INIT_ENV
 void	init_env(char **envp, t_shell *shell_vars);
 void	free_env_list(t_env *env_list);
