@@ -54,7 +54,7 @@ void	free_all_structs(t_shell *sh)
 
 void	interactive_mode(t_shell *sh)
 {
-	while (1)
+	while (sh->running)
 	{
 		sh->input = readline("Minishell> ");
 		if (sh->input == NULL)
@@ -76,7 +76,8 @@ void	interactive_mode(t_shell *sh)
 			continue ;
 		}
 		execute_ast(sh->head_ast, sh);
-		free_internal_use_structs(sh);
+		if (sh->running)
+			free_internal_use_structs(sh);
 	}
 	rl_clear_history();
 	free_all_structs(sh);

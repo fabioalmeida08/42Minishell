@@ -1,30 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtin_echo.c                                     :+:      :+:    :+:   */
+/*   builtin_exit.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fabialme <fabialme@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/06 14:50:19 by fabialme          #+#    #+#             */
-/*   Updated: 2026/01/06 15:21:40 by fabialme         ###   ########.fr       */
+/*   Created: 2026/01/21 09:40:07 by fabialme          #+#    #+#             */
+/*   Updated: 2026/01/21 09:45:41 by fabialme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	builtin_echo(char **cmd, t_shell *sh)
+void	builtin_exit(char **cmd, t_shell *sh)
 {
-	if (cmd[1])
-	{
-		if (ft_strcmp(cmd[1], "-n") && cmd[2])
-		{
-			printf("%s",cmd[2]);
-			sh->exit_status = 1;
-		}
-		else
-		{
-			printf("%s\n",cmd[1]);
-			sh->exit_status = 1;
-		}
-	}
+	(void) cmd;
+	sh->running = false;
 }
