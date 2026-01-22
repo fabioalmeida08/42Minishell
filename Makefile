@@ -64,7 +64,7 @@ BUILTIN_SRC :=	builtin_utils.c \
 DEBUGING_SRC := print_tokens.c \
 				print_ast.c
 
-EXEC_SRC := exec_pipe.c \
+EXEC_SRC := exec.c \
 						redirections.c \
 						heredoc.c
 

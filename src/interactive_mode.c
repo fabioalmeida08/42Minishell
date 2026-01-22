@@ -6,27 +6,11 @@
 /*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 14:32:35 by bolegari          #+#    #+#             */
-/*   Updated: 2026/01/19 14:19:22 by bolegari         ###   ########.fr       */
+/*   Updated: 2026/01/22 14:23:05 by fabialme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-void	execute_cmd(t_ast *ast, t_shell *sh)
-{
-	if (is_builtin(ast->args, sh))
-		execute_builtin_with_redir(ast, sh);
-	else
-		execve_cmd(ast, sh); 
-}
-
-void	execute_ast(t_ast *ast, t_shell *sh)
-{
-	if (ast->type == NODE_CMD)
-		execute_cmd(ast, sh);
-	if (ast->type == NODE_PIPE)
-		execute_pipe(ast, sh);
-}
 
 void	free_internal_use_structs(t_shell *sh)
 {
@@ -52,6 +36,12 @@ void	free_all_structs(t_shell *sh)
 	free_env_list(sh->env_list);
 }
 
+void	clear_and_free(t_shell *sh)
+{
+	rl_clear_history();
+	free_all_structs(sh);
+}
+
 void	interactive_mode(t_shell *sh)
 {
 	while (sh->running)
@@ -68,7 +58,7 @@ void	interactive_mode(t_shell *sh)
 			continue ;
 		}
 		if (!expand_ast(sh->head_ast, sh))
-		  print_ast(sh->head_ast, 0);
+			print_ast(sh->head_ast, 0);
 		if (!sh->head_tokens || !sh->head_ast)
 		{
 			free_internal_use_structs(sh);
@@ -78,6 +68,5 @@ void	interactive_mode(t_shell *sh)
 		if (sh->running)
 			free_internal_use_structs(sh);
 	}
-	rl_clear_history();
-	free_all_structs(sh);
+	clear_and_free(sh);
 }

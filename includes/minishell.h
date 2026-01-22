@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 10:47:12 by fabialme          #+#    #+#             */
-/*   Updated: 2026/01/22 10:10:12 by fabialme         ###   ########.fr       */
+/*   Updated: 2026/01/22 14:23:49 by fabialme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,6 +158,8 @@ void	execute_ast(t_ast *ast, t_shell *sh);
 
 //EXECV
 char	*try_path(char *dir, char *cmd);
+void	execute_cmd(t_ast *ast, t_shell *sh);
+void	execute_ast(t_ast *ast, t_shell *sh);
 
 char	*search_in_paths(char **paths, char *cmd);
 char	*find_path(char *cmd, t_shell *sh);
