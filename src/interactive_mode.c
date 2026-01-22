@@ -6,7 +6,7 @@
 /*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 14:32:35 by bolegari          #+#    #+#             */
-/*   Updated: 2026/01/22 14:23:05 by fabialme         ###   ########.fr       */
+/*   Updated: 2026/01/22 15:21:03 by fabialme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,7 @@ void	interactive_mode(t_shell *sh)
 			free_internal_use_structs(sh);
 			continue ;
 		}
-		if (!expand_ast(sh->head_ast, sh))
-			print_ast(sh->head_ast, 0);
+		expand_ast(sh->head_ast, sh);
 		if (!sh->head_tokens || !sh->head_ast)
 		{
 			free_internal_use_structs(sh);
