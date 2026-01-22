@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 10:47:12 by fabialme          #+#    #+#             */
-/*   Updated: 2026/01/21 09:45:18 by fabialme         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:10:12 by fabialme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,7 +163,8 @@ char	*search_in_paths(char **paths, char *cmd);
 char	*find_path(char *cmd, t_shell *sh);
 void	exec_child(char *path, char **input, t_shell *sh);
 void	exec_parent(pid_t pid, t_shell *sh);
-int	check_redirections(t_ast *node);
+// int	check_redirections(t_ast *node);
+int	check_redirections(t_ast *node, t_shell *sh);
 void	execute_builtin_with_redir(t_ast *ast, t_shell *sh);
 //BUILTIN
 void	init_builtin(t_shell *sh);
@@ -203,6 +204,7 @@ char	*ft_charjoin_free(char *s, char c);
 char	*ft_strjoin_free(char *s1, char *s2);
 void	append_one(char ***args, char *arg);
 void	normalize_heredoc(t_redirect *redirs);
+int	process_heredoc(char *delimiter, bool expand, t_shell *sh);
 
 void	free_all_structs(t_shell *sh);
 //DEBUG

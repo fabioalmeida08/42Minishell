@@ -6,70 +6,35 @@
 /*   By: fabialme <fabialme@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 15:15:26 by fabialme          #+#    #+#             */
-/*   Updated: 2026/01/08 15:17:56 by fabialme         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:17:34 by fabialme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-#include <unistd.h>
 
-static int	process_heredoc(char *delimiter)
+static void	restore_io(int saved_out, int saved_in)
 {
-	int		fd;
-	char	*line;
-	char	*filename = "/tmp/.mshell_heredoc_tmp";
-
-	// 1. Abre arquivo para escrita
-	fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-	if (fd == -1)
-	{
-		perror("minishell: heredoc open");
-		return (-1);
-	}
-	while (1)
-	{
-		line = readline("> "); // Prompt secundário
-		if (!line) // Trata Ctrl+D (EOF forçado)
-		{
-			ft_putstr_fd("warning: here-document delimited by end-of-file (wanted `EOF')\n",2);
-			break ;
-		}
-		if (ft_strcmp(line, delimiter)) // Verifica se é o delimitador
-		{
-			free(line);
-			break ;
-		}
-		// AQUI entraria a expansão de variáveis no futuro
-		ft_putstr_fd(line, fd);
-		ft_putstr_fd("\n", fd); // Readline remove o \n, precisamos repor
-		free(line);
-	}
-	close(fd);
-	// 2. Abre o mesmo arquivo agora apenas para leitura
-	fd = open(filename, O_RDONLY);
-	// 3. Unlink remove o arquivo do sistema (limpeza), mas mantém o FD aberto
-	unlink(filename);
-	return (fd);
+	dup2(saved_out, STDOUT_FILENO);
+	dup2(saved_in, STDIN_FILENO);
+	close(saved_out);
+	close(saved_in);
 }
 
-static int	open_target(t_redirect *tmp)
+static int	open_target(t_redirect *tmp, t_shell *sh)
 {
 	int	fd;
+	int	flags;
 
-	// >>> Lógica Nova <<<
 	if (tmp->type == REDIR_HEREDOC)
-	{
-		fd = process_heredoc(tmp->target);
-	}
-	// >>> Lógica Antiga <<<
-	else if (tmp->type == REDIR_IN)
-		fd = open(tmp->target, O_RDONLY);
+		return (process_heredoc(tmp->target, true, sh));
+	if (tmp->type == REDIR_IN)
+		flags = O_RDONLY;
 	else if (tmp->type == REDIR_OUT)
-		fd = open(tmp->target, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	else // REDIR_APPEND
-		fd = open(tmp->target, O_WRONLY | O_CREAT | O_APPEND, 0644);
-	
-	if (fd == -1 && tmp->type != REDIR_HEREDOC) // Evita duplo perror se falhar heredoc
+		flags = O_WRONLY | O_CREAT | O_TRUNC;
+	else
+		flags = O_WRONLY | O_CREAT | O_APPEND;
+	fd = open(tmp->target, flags, 0644);
+	if (fd == -1)
 	{
 		ft_putstr_fd("minishell: ", 2);
 		perror(tmp->target);
@@ -77,7 +42,7 @@ static int	open_target(t_redirect *tmp)
 	return (fd);
 }
 
-int	check_redirections(t_ast *node)
+int	check_redirections(t_ast *node, t_shell *sh)
 {
 	t_redirect	*tmp;
 	int			fd;
@@ -85,19 +50,15 @@ int	check_redirections(t_ast *node)
 	tmp = node->redirs;
 	while (tmp)
 	{
-		printf("entrei aqui no check redir ---\n");
-		fd = open_target(tmp);
+		fd = open_target(tmp, sh);
 		if (fd == -1)
 			return (-1);
-		
-		// >>> MUDANÇA IMPORTANTE AQUI <<<
-		// Heredoc deve se comportar como Input (<) para o dup2
 		if (tmp->type == REDIR_IN || tmp->type == REDIR_HEREDOC)
 		{
 			if (dup2(fd, STDIN_FILENO) == -1)
 				return (perror("minishell: dup2"), close(fd), -1);
 		}
-		else // OUT ou APPEND
+		else
 		{
 			if (dup2(fd, STDOUT_FILENO) == -1)
 				return (perror("minishell: dup2"), close(fd), -1);
@@ -113,39 +74,19 @@ void	execute_builtin_with_redir(t_ast *ast, t_shell *sh)
 	int	saved_stdout;
 	int	saved_stdin;
 
-	// 1. OTIMIZAÇÃO E CORREÇÃO DO VALGRIND:
-	// Se não tem redirecionamentos, executa direto e retorna.
-	// Isso evita chamar dup/dup2 no 'exit' simples, eliminando o erro do Valgrind.
 	if (!ast->redirs)
 	{
 		exec_builtin(ast->args, sh);
 		return ;
 	}
-
-	// 2. Salva STDIN e STDOUT originais
-	// Necessário salvar STDIN também, pois builtins rodam no processo pai.
-	// Se mudarmos o STDIN aqui sem restaurar, o próximo comando do shell quebrará.
 	saved_stdout = dup(STDOUT_FILENO);
 	saved_stdin = dup(STDIN_FILENO);
-
-	// 3. Tenta aplicar os redirecionamentos
-	if (check_redirections(ast) == -1)
+	if (check_redirections(ast, sh) == -1)
 	{
 		sh->exit_status = 1;
-		// Falhou (ex: arquivo não existe). Restaura e sai.
-		dup2(saved_stdout, STDOUT_FILENO);
-		dup2(saved_stdin, STDIN_FILENO);
-		close(saved_stdout);
-		close(saved_stdin);
+		restore_io(saved_stdout, saved_stdin);
 		return ;
 	}
-
-	// 4. Executa o builtin (com os FDs alterados)
 	exec_builtin(ast->args, sh);
-
-	// 5. Restaura STDIN e STDOUT para o terminal/estado original
-	dup2(saved_stdout, STDOUT_FILENO);
-	dup2(saved_stdin, STDIN_FILENO);
-	close(saved_stdout);
-	close(saved_stdin);
+	restore_io(saved_stdout, saved_stdin);
 }
