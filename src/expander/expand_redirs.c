@@ -34,7 +34,7 @@ char	*expand_redir_target(char *target, t_shell *sh, bool *error)
 
 static bool	has_quotes(char *str)
 {
-	while(str && *str)
+	while (str && *str)
 	{
 		if (*str == '"' || *str == '\'')
 			return (true);
@@ -72,7 +72,7 @@ static char	*remove_quotes(char *str)
 
 void	normalize_heredoc(t_redirect *redirs)
 {
-	if(has_quotes(redirs->target))
+	if (has_quotes(redirs->target))
 	{
 		redirs->expand = false;
 		redirs->target = remove_quotes(redirs->target);
