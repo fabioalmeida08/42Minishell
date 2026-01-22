@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 10:47:12 by fabialme          #+#    #+#             */
-/*   Updated: 2026/01/22 14:23:49 by fabialme         ###   ########.fr       */
+/*   Updated: 2026/01/22 15:31:43 by fabialme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@
 # include <readline/history.h>
 # include "../libft/includes/libft.h"
 # include <fcntl.h>
+
+extern volatile int g_signal_status;
 
 typedef enum e_quote
 {

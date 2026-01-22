@@ -6,7 +6,7 @@
 /*   By: fabialme <fabialme@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 14:21:57 by fabialme          #+#    #+#             */
-/*   Updated: 2026/01/22 14:24:15 by fabialme         ###   ########.fr       */
+/*   Updated: 2026/01/22 15:59:33 by fabialme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 void	execute_cmd(t_ast *ast, t_shell *sh)
 {
+	if (!ast->args || !ast->args[0])
+		return ;
 	if (is_builtin(ast->args, sh))
 		execute_builtin_with_redir(ast, sh);
 	else
