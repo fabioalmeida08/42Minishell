@@ -6,7 +6,7 @@
 /*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/04 16:27:23 by bolegari          #+#    #+#             */
-/*   Updated: 2025/12/16 16:10:08 by fabialme         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:00:05 by fabialme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static void	run_child_process(t_ast *ast, t_shell *sh)
 {
 	char	*path;
 
-	if (check_redirections(ast) == -1)
+	if (check_redirections(ast, sh) == -1)
 	{
 		free_all_structs(sh);
 		exit(1);
