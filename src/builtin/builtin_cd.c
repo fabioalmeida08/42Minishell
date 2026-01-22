@@ -12,9 +12,9 @@
 
 #include "../../includes/minishell.h"
 
-static void update_work_dirs(t_shell *sh, char *old_pwd)
+static void	update_work_dirs(t_shell *sh, char *old_pwd)
 {
-	char cwd[4096];
+	char	cwd[4096];
 
 	if (getcwd(cwd, 4096) == NULL)
 	{
@@ -28,12 +28,11 @@ static void update_work_dirs(t_shell *sh, char *old_pwd)
 
 bool	change_home(t_shell *sh)
 {
-	char *home_dir;
+	char	*home_dir;
 	char	*cwd;
 
 	home_dir = get_env_value(sh->env_list, "HOME");
 	cwd = get_env_value(sh->env_list, "PWD");
-
 	if (chdir(home_dir) != 0)
 	{
 		ft_putstr_fd("minishell: cd: cannot find HOME", 2);
@@ -46,7 +45,6 @@ bool	change_home(t_shell *sh)
 	}
 	return (true);
 }
-
 
 void	builtin_cd(char **cmd, t_shell *sh)
 {

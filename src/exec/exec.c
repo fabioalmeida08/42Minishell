@@ -1,16 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_pipe.c                                        :+:      :+:    :+:   */
+/*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fabialme <fabialme@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/16 15:42:29 by fabialme          #+#    #+#             */
-/*   Updated: 2026/01/05 16:21:28 by bolegari         ###   ########.fr       */
+/*   Created: 2026/01/22 14:21:57 by fabialme          #+#    #+#             */
+/*   Updated: 2026/01/22 14:24:15 by fabialme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+void	execute_cmd(t_ast *ast, t_shell *sh)
+{
+	if (is_builtin(ast->args, sh))
+		execute_builtin_with_redir(ast, sh);
+	else
+		execve_cmd(ast, sh);
+}
+
+void	execute_ast(t_ast *ast, t_shell *sh)
+{
+	if (ast->type == NODE_CMD)
+		execute_cmd(ast, sh);
+	if (ast->type == NODE_PIPE)
+		execute_pipe(ast, sh);
+}
 
 static void	exec_childs(t_ast *node, int *fd, int dir, t_shell *sh)
 {

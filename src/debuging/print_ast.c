@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 17:23:50 by marvin            #+#    #+#             */
-/*   Updated: 2025/12/29 17:23:50 by marvin           ###   ########.fr       */
+/*   Updated: 2026/01/22 14:30:32 by fabialme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,33 +25,35 @@ static const char	*redir_type_str(t_redir_type type)
 	return ("?");
 }
 
-static void	print_cmd(t_ast *node, int depth)
-{
-	int			i;
-	t_redirect	*redir;
-
-	printf("NODE_CMD");
-	if (node->args && node->args[0])
-	{
-		printf(" | args: ");
-		i = -1;
-		while (node->args[++i])
-			printf("%s ", node->args[i]);
-	}
-	printf("\n");
-	redir = node->redirs;
-	while (redir)
-	{
-		i = 0;
-		while (i++ < depth + 1)
-			printf("  ");
-		if (redir->type == REDIR_HEREDOC)
-			printf("REDIR %s %s (expand:%d)\n", redir_type_str(redir->type), redir->target, redir->expand);
-		else
-			printf("REDIR %s %s\n", redir_type_str(redir->type), redir->target);
-		redir = redir->next;
-	}
-}
+// static void	print_cmd(t_ast *node, int depth)
+// {
+// 	int			i;
+// 	t_redirect	*redir;
+//
+// 	printf("NODE_CMD");
+// 	if (node->args && node->args[0])
+// 	{
+// 		printf(" | args: ");
+// 		i = -1;
+// 		while (node->args[++i])
+// 			printf("%s ", node->args[i]);
+// 	}
+// 	printf("\n");
+// 	redir = node->redirs;
+// 	while (redir)
+// 	{
+// 		i = 0;
+// 		while (i++ < depth + 1)
+// 			printf("  ");
+// 		if (redir->type == REDIR_HEREDOC)
+// 			printf("REDIR %s %s (expand:%d)\n", redir_type_str(redir->type),
+// 				redir->target, redir->expand);
+// 		else
+// 			printf("REDIR %s %s\n", redir_type_str(redir->type),
+// 				redir->target);
+// 		redir = redir->next;
+// 	}
+// }
 
 void	print_ast(t_ast *node, int depth)
 {
