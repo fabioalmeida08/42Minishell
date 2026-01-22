@@ -110,7 +110,7 @@ typedef struct s_shell
 	t_builtin	*g_builtins;
 	t_token		*head_tokens;
 	t_ast		*head_ast;
-  bool	running;
+	bool		running;
 }	t_shell;
 
 //MINISHELL(MAIN)
@@ -166,7 +166,7 @@ char	*find_path(char *cmd, t_shell *sh);
 void	exec_child(char *path, char **input, t_shell *sh);
 void	exec_parent(pid_t pid, t_shell *sh);
 // int	check_redirections(t_ast *node);
-int	check_redirections(t_ast *node, t_shell *sh);
+int		check_redirections(t_ast *node, t_shell *sh);
 void	execute_builtin_with_redir(t_ast *ast, t_shell *sh);
 //BUILTIN
 void	init_builtin(t_shell *sh);
@@ -177,7 +177,7 @@ void	builtin_env(char **cmd, t_shell *sh);
 void	builtin_export(char **cmd, t_shell *sh);
 void	builtin_unset(char **cmd, t_shell *sh);
 void	builtin_cd(char **cmd, t_shell *sh);
-int	update_env_var(t_env *env_list, char *key, char *value);
+int		update_env_var(t_env *env_list, char *key, char *value);
 void	builtin_echo(char **cmd, t_shell *sh);
 void	builtin_exit(char **cmd, t_shell *sh);
 
@@ -206,7 +206,7 @@ char	*ft_charjoin_free(char *s, char c);
 char	*ft_strjoin_free(char *s1, char *s2);
 void	append_one(char ***args, char *arg);
 void	normalize_heredoc(t_redirect *redirs);
-int	process_heredoc(char *delimiter, bool expand, t_shell *sh);
+int		process_heredoc(char *delimiter, bool expand, t_shell *sh);
 
 void	free_all_structs(t_shell *sh);
 //DEBUG
