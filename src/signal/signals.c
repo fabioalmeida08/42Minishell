@@ -14,6 +14,7 @@
 
 void	handle_sigint(int sig)
 {
+	g_signal_status = sig;
 	if (sig == SIGINT)
 	{
 		write(1, "\n", 1);

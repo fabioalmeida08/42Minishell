@@ -12,6 +12,17 @@
 
 #include "../includes/minishell.h"
 
+volatile int	g_signal_status;
+
+void	set_signal_status(t_shell *sh)
+{
+	if (g_signal_status != 0)
+	{
+		sh->exit_status = 128 + g_signal_status;
+		g_signal_status = 0;
+	}
+}
+
 void	free_internal_use_structs(t_shell *sh)
 {
 	if (sh->input)
@@ -47,6 +58,7 @@ void	interactive_mode(t_shell *sh)
 	while (sh->running)
 	{
 		sh->input = readline("Minishell> ");
+		set_signal_status(sh);
 		if (sh->input == NULL)
 			break ;
 		add_history(sh->input);
