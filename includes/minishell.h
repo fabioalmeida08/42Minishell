@@ -24,7 +24,7 @@
 # include "../libft/includes/libft.h"
 # include <fcntl.h>
 
-extern volatile int g_signal_status;
+extern volatile int		g_signal_status;
 
 typedef enum e_quote
 {
