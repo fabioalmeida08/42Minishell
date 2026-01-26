@@ -23,8 +23,8 @@ void print(char **cmd)
 	printf("\n");
 }
 
-{
 void	builtin_echo(char **cmd, t_shell *sh)
+{
 	if (cmd[1])
 	{
 		if (ft_strcmp(cmd[1], "-n") && cmd[2])
