@@ -12,14 +12,18 @@
 
 #include "../../includes/minishell.h"
 
-void	print(char **cmd)
+void	print(char **cmd, int i, bool nl)
 {
-	int	i;
-
-	i = 1;
 	while (cmd[i])
-		printf("%s ", cmd[i++]);
-	printf("\n");
+	{
+		if (!cmd[i + 1])
+			printf("%s", cmd[i]);
+		else
+			printf("%s ", cmd[i]);
+		i++;
+	}
+	if (nl)
+		printf("\n");
 }
 
 void	builtin_echo(char **cmd, t_shell *sh)
@@ -28,12 +32,12 @@ void	builtin_echo(char **cmd, t_shell *sh)
 	{
 		if (ft_strcmp(cmd[1], "-n") && cmd[2])
 		{
-			printf("%s", cmd[2]);
+			print(cmd, 2, false);
 			sh->exit_status = 0;
 		}
 		else
 		{
-			print(cmd);
+			print(cmd, 1, true);
 			sh->exit_status = 0;
 		}
 	}
