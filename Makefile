@@ -121,4 +121,7 @@ re: fclean all
 run: all
 	valgrind -s --suppressions=readline.supp --track-fds=yes --leak-check=full --show-leak-kinds=all ./minishell
 
+non: all
+	valgrind -s --suppressions=readline.supp --track-fds=yes --leak-check=full --show-leak-kinds=all ./minishell < test_non.txt
+
 .PHONY: all clean fclean re

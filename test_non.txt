@@ -1,0 +1,6 @@
+echo "Hello World"
+ls -l
+pwd
+sleep 10
+ls | wc -l
+echo "Fim do teste"

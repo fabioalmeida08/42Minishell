@@ -6,7 +6,7 @@
 /*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 16:10:15 by bolegari          #+#    #+#             */
-/*   Updated: 2026/01/26 14:45:00 by bolegari         ###   ########.fr       */
+/*   Updated: 2026/01/26 15:16:58 by bolegari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ int	main(int argc, char *argv[], char *envp[])
 	sh.head_tokens = NULL;
 	sh.head_ast = NULL;
 	sh.running = true;
-	if (isatty(STDIN_FILENO))
+	sh.interactive = isatty(STDIN_FILENO);
+	if (sh.interactive)
 	{
 		setup_interactive_parent_signals();
 		interactive_mode(&sh);
