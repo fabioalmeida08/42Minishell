@@ -6,7 +6,7 @@
 /*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 14:32:35 by bolegari          #+#    #+#             */
-/*   Updated: 2026/01/22 16:00:11 by fabialme         ###   ########.fr       */
+/*   Updated: 2026/01/26 15:33:35 by bolegari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void	free_internal_use_structs(t_shell *sh)
 {
 	if (sh->input)
 		free(sh->input);
+	sh->input = NULL;
 	if (sh->head_ast)
 	{
 		free_ast(sh->head_ast);
@@ -47,7 +48,7 @@ void	free_all_structs(t_shell *sh)
 	free_env_list(sh->env_list);
 }
 
-void	clear_and_free(t_shell *sh)
+static void	clear_and_free(t_shell *sh)
 {
 	rl_clear_history();
 	free_all_structs(sh);

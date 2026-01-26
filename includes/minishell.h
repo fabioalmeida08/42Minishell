@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 10:47:12 by fabialme          #+#    #+#             */
-/*   Updated: 2026/01/22 15:31:43 by fabialme         ###   ########.fr       */
+/*   Updated: 2026/01/26 15:06:56 by bolegari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,11 +113,15 @@ typedef struct s_shell
 	t_token		*head_tokens;
 	t_ast		*head_ast;
 	bool		running;
+	bool		interactive;
 }	t_shell;
 
 //MINISHELL(MAIN)
 void	interactive_mode(t_shell *sh);
-void	non_interactive_mode(void);
+void	non_interactive_mode(t_shell *sh);
+void	set_signal_status(t_shell *sh);
+void	free_internal_use_structs(t_shell *sh);
+void	free_all_structs(t_shell *sh);
 
 //LEXER/TOKEN
 t_token	*handle_operator(const char **str);
