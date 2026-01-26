@@ -12,14 +12,13 @@
 
 #include "../../includes/minishell.h"
 
-void print(char **cmd)
+void	print(char **cmd)
 {
-	int i;
+	int	i;
 
 	i = 1;
-
 	while (cmd[i])
-		printf("%s ",cmd[i++]);
+		printf("%s ", cmd[i++]);
 	printf("\n");
 }
 
