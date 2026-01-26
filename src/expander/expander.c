@@ -57,45 +57,6 @@ static bool	state_updater(char c, t_quote *state)
 	return (false);
 }
 
-static void	handle_space(char **current_arg, char ***args, int *i)
-{
-	if (*current_arg)
-	{
-		append_one(args, *current_arg);
-		*current_arg = NULL;
-	}
-	(*i)++;
-}
-
-static void	handle_dollar(char **current_arg, char ***args,
-	t_quote state, char *expanded_var)
-{
-	int		i;
-	char	**splited_var;
-
-	i = 1;
-	if (state == Q_DOUBLE)
-		*current_arg = ft_strjoin_free(*current_arg, expanded_var);
-	else
-	{
-		splited_var = ft_split(expanded_var, ' ');
-		if (splited_var && splited_var[0])
-		{
-			*current_arg = ft_strjoin_free(*current_arg, splited_var[0]);
-			append_one(args, *current_arg);
-			*current_arg = NULL;
-			while (splited_var[i])
-			{
-				append_one(args, ft_strdup(splited_var[i]));
-				i++;
-			}
-		}
-		if (splited_var)
-			free_envp(splited_var);
-	}
-	free(expanded_var);
-}
-
 void	expand_and_remove_quotes(char *str, t_shell *sh, char ***args)
 {
 	int		i;
@@ -110,12 +71,11 @@ void	expand_and_remove_quotes(char *str, t_shell *sh, char ***args)
 	{
 		if (state_updater(str[i], &state))
 			i++;
-		else if (str[i] == ' ' && state == Q_NONE)
-			handle_space(&current_arg, args, &i);
 		else if (str[i] == '$' && state != Q_SINGLE && str[i + 1])
 		{
 			expanded_var = expand_var(str, &i, sh);
-			handle_dollar(&current_arg, args, state, expanded_var);
+			current_arg = ft_strjoin_free(current_arg, expanded_var);
+			free(expanded_var);
 		}
 		else
 			current_arg = ft_charjoin_free(current_arg, str[i++]);

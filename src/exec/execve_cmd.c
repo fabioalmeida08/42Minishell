@@ -6,7 +6,7 @@
 /*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/04 16:27:23 by bolegari          #+#    #+#             */
-/*   Updated: 2026/01/22 10:00:05 by fabialme         ###   ########.fr       */
+/*   Updated: 2026/01/26 18:29:29 by bolegari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static void	run_child_process(t_ast *ast, t_shell *sh)
 	path = get_cmd_path(ast->args[0], sh);
 	if (!path)
 		handle_cmd_not_found(ast->args[0], sh);
-	execve(path, ast->args, sh->envp);
+	execve(path, ast->args, env_to_envp(sh->env_list));
 	perror("minishell: execve");
 	free(path);
 	free_all_structs(sh);
