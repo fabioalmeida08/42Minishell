@@ -92,7 +92,7 @@ static void	write_heredoc_loop(int fd, char *delim, bool expand, t_shell *sh)
 			ft_putstr_fd("warning: here-document delimited by EOF\n", 2);
 			break ;
 		}
-		if (ft_strcmp(line, delim))
+		if (ft_strcmp(line, delim) == 0)
 		{
 			free(line);
 			break ;

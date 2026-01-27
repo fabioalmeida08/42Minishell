@@ -6,60 +6,75 @@
 /*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/10 16:07:49 by bolegari          #+#    #+#             */
-/*   Updated: 2025/12/10 16:07:49 by bolegari         ###   ########.fr       */
+/*   Updated: 2026/01/27 16:10:12 by fabialme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	export_print(t_shell *sh)
+static int	is_valid_identifier(char *arg)
 {
-	t_env	*env_list;
+	int	i;
 
-	env_list = sh->env_list;
-	while (env_list)
+	if (!arg || (!ft_isalpha(arg[0]) && arg[0] != '_'))
+		return (0);
+	i = 1;
+	while (arg[i] && arg[i] != '=')
 	{
-		printf("declare -x %s", env_list->key);
-		if (env_list->value)
-			printf("=\"%s\"", env_list->value);
-		printf("\n");
-		env_list = env_list->next;
+		if (!ft_isalnum(arg[i]) && arg[i] != '_')
+			return (0);
+		i++;
 	}
+	return (1);
 }
 
-static void	export_with_value(t_shell *sh, char *arg)
+static void	handle_export(t_shell *sh, char *arg)
 {
-	char	*equal;
+	char	*eq;
 	char	*key;
-	char	*value;
+	char	*val;
 
-	equal = ft_strchr(arg, '=');
-	key = ft_substr(arg, 0, equal - arg);
-	value = ft_strdup(equal + 1);
-	if (get_env_node(sh->env_list, key))
-		update_env_var(sh->env_list, key, value);
-	else
-		add_env_var(&sh->env_list, key, value);
-	free(key);
-	free(value);
+	eq = ft_strchr(arg, '=');
+	if (eq)
+	{
+		key = ft_substr(arg, 0, eq - arg);
+		val = ft_strdup(eq + 1);
+		if (get_env_node(sh->env_list, key))
+			update_env_var(sh->env_list, key, val);
+		else
+			add_env_var(&sh->env_list, key, val);
+		free(key);
+		free(val);
+	}
+	else if (!get_env_node(sh->env_list, arg))
+		add_env_var(&sh->env_list, arg, NULL);
 }
 
-static void	export_without_value(t_shell *sh, char *key)
+static void	print_export_error(char *arg, t_shell *sh)
 {
-	if (get_env_node(sh->env_list, key))
-		return ;
-	add_env_var(&sh->env_list, key, NULL);
+	ft_putstr_fd("minishell: export: `", 2);
+	ft_putstr_fd(arg, 2);
+	ft_putstr_fd("': not a valid identifier\n", 2);
+	sh->exit_status = 1;
 }
 
 void	builtin_export(char **cmd, t_shell *sh)
 {
+	int	i;
+
+	sh->exit_status = 0;
 	if (!cmd[1])
 	{
 		export_print(sh);
 		return ;
 	}
-	if (ft_strchr(cmd[1], '='))
-		export_with_value(sh, cmd[1]);
-	else
-		export_without_value(sh, cmd[1]);
+	i = 1;
+	while (cmd[i])
+	{
+		if (!is_valid_identifier(cmd[i]))
+			print_export_error(cmd[i], sh);
+		else
+			handle_export(sh, cmd[i]);
+		i++;
+	}
 }
