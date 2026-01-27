@@ -12,33 +12,42 @@
 
 #include "../../includes/minishell.h"
 
-void	print(char **cmd, int i, bool nl)
+static bool	is_n_flag(char *arg)
 {
-	while (cmd[i])
+	int	i;
+
+	if (!arg || arg[0] != '-' || !arg[1])
+		return (false);
+	i = 1;
+	while (arg[i])
 	{
-		if (!cmd[i + 1])
-			printf("%s", cmd[i]);
-		else
-			printf("%s ", cmd[i]);
+		if (arg[i] != 'n')
+			return (false);
 		i++;
 	}
-	if (nl)
-		printf("\n");
+	return (true);
 }
 
 void	builtin_echo(char **cmd, t_shell *sh)
 {
-	if (cmd[1])
+	int		i;
+	bool	nl;
+
+	i = 1;
+	nl = true;
+	while (cmd[i] && is_n_flag(cmd[i]))
 	{
-		if (ft_strcmp(cmd[1], "-n") && cmd[2])
-		{
-			print(cmd, 2, false);
-			sh->exit_status = 0;
-		}
-		else
-		{
-			print(cmd, 1, true);
-			sh->exit_status = 0;
-		}
+		nl = false;
+		i++;
 	}
+	while (cmd[i])
+	{
+		printf("%s", cmd[i]);
+		if (cmd[i + 1])
+			printf(" ");
+		i++;
+	}
+	if (nl)
+		printf("\n");
+	sh->exit_status = 0;
 }
