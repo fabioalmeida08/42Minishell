@@ -49,7 +49,7 @@ t_ast	*parser_cmd(t_token *start, t_token *end, t_shell *sh)
 			syntax_error(start, sh);
 			return (NULL);
 		}
-		new_node = parser_logical(start->next, close_paren, sh);
+		new_node = parser_pipe(start->next, close_paren, sh);
 	}
 	else
 		new_node = simple_cmd(start, end, sh);

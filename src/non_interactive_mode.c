@@ -26,7 +26,7 @@ void	non_interactive_mode(t_shell *sh)
 		if (sh->input[0] != '\0')
 		{
 			sh->head_tokens = ft_tokenize(sh);
-			sh->head_ast = parser_logical(sh->head_tokens, NULL, sh);
+			sh->head_ast = parser_pipe(sh->head_tokens, NULL, sh);
 			if (sh->head_ast)
 			{
 				expand_ast(sh->head_ast, sh);

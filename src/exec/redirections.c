@@ -36,7 +36,7 @@ static int	open_target(t_redirect *tmp, t_shell *sh)
 	fd = open(tmp->target, flags, 0644);
 	if (fd == -1)
 	{
-		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd("Minishell> ", 2);
 		perror(tmp->target);
 	}
 	return (fd);
@@ -56,12 +56,12 @@ int	check_redirections(t_ast *node, t_shell *sh)
 		if (tmp->type == REDIR_IN || tmp->type == REDIR_HEREDOC)
 		{
 			if (dup2(fd, STDIN_FILENO) == -1)
-				return (perror("minishell: dup2"), close(fd), -1);
+				return (perror("Minishell: dup2 failed"), close(fd), -1);
 		}
 		else
 		{
 			if (dup2(fd, STDOUT_FILENO) == -1)
-				return (perror("minishell: dup2"), close(fd), -1);
+				return (perror("Minishell: dup2 failed"), close(fd), -1);
 		}
 		close(fd);
 		tmp = tmp->next;

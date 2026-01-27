@@ -75,10 +75,6 @@ void	print_ast(t_ast *node, int depth)
 		print_cmd(node, depth);
 	else if (node->type == NODE_PIPE)
 		printf("NODE_PIPE\n");
-	else if (node->type == NODE_AND)
-		printf("NODE_AND\n");
-	else if (node->type == NODE_OR)
-		printf("NODE_OR\n");
 	print_ast(node->left, depth + 1);
 	print_ast(node->right, depth + 1);
 }

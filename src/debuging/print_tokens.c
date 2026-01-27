@@ -26,10 +26,6 @@ static void	print_node_type(t_token *current)
 		printf("REDIR_APPEND");
 	else if (current->type == TK_REDIR_HEREDOC)
 		printf("HEREDOC");
-	else if (current->type == TK_OR)
-		printf("OR");
-	else if (current->type == TK_AND)
-		printf("AND");
 	else if (current->type == TK_PAREN_OPEN)
 		printf("PAREN_OPEN");
 	else if (current->type == TK_PAREN_CLOSE)

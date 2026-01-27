@@ -25,7 +25,7 @@ static char	*get_cmd_path(char *cmd, t_shell *sh)
 
 static void	handle_cmd_not_found(char *cmd, t_shell *sh)
 {
-	ft_putstr_fd("minishell: ", 2);
+	ft_putstr_fd("Minishell> ", 2);
 	ft_putstr_fd(cmd, 2);
 	ft_putstr_fd(": command not found\n", 2);
 	free_all_structs(sh);
@@ -45,7 +45,7 @@ static void	run_child_process(t_ast *ast, t_shell *sh)
 	if (!path)
 		handle_cmd_not_found(ast->args[0], sh);
 	execve(path, ast->args, env_to_envp(sh->env_list));
-	perror("minishell: execve");
+	perror("Minishell> execve failed");
 	free(path);
 	free_all_structs(sh);
 	exit(126);
@@ -74,7 +74,7 @@ void	execve_cmd(t_ast *ast, t_shell *sh)
 	pid = fork();
 	if (pid == -1)
 	{
-		perror("minishell: fork");
+		perror("Minishell> fork failed");
 		setup_interactive_parent_signals();
 		return ;
 	}

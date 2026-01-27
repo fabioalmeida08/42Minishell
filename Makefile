@@ -37,7 +37,6 @@ LEXER_SRC := 	lexer_utils.c \
 
 PARSER_SRC := 	parser_cmd.c \
 				parser_pipe.c \
-				parser_logical.c \
 				parser_utils.c \
 				simple_cmd.c 
 
@@ -61,11 +60,11 @@ BUILTIN_SRC :=	builtin_utils.c \
 DEBUGING_SRC := print_tokens.c \
 				print_ast.c
 
-EXEC_SRC := exec.c \
-						redirections.c \
-						heredoc.c \
-						execve_cmd.c \
-						execve_utils.c \
+EXEC_SRC :=		exec.c \
+				redirections.c \
+				heredoc.c \
+				execve_cmd.c \
+				execve_utils.c \
 
 EXPANDER_SRC := expand_ast.c \
 				expand_word.c \
@@ -120,8 +119,5 @@ re: fclean all
 
 run: all
 	valgrind -s --suppressions=readline.supp --track-fds=yes --leak-check=full --show-leak-kinds=all ./minishell
-
-non: all
-	valgrind -s --suppressions=readline.supp --track-fds=yes --leak-check=full --show-leak-kinds=all ./minishell < test_non.txt
 
 .PHONY: all clean fclean re
