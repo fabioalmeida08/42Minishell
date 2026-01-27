@@ -117,7 +117,7 @@ int	process_heredoc(char *delimiter, bool expand, t_shell *sh)
 	fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (fd == -1)
 	{
-		perror("minishell: heredoc open");
+		perror("Minishell> heredoc open failed");
 		return (-1);
 	}
 	write_heredoc_loop(fd, delimiter, expand, sh);

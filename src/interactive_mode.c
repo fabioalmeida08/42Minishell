@@ -64,13 +64,15 @@ void	interactive_mode(t_shell *sh)
 			break ;
 		add_history(sh->input);
 		sh->head_tokens = ft_tokenize(sh);
-		sh->head_ast = parser_logical(sh->head_tokens, NULL, sh);
+		sh->head_ast = parser_pipe(sh->head_tokens, NULL, sh);
 		if (!sh->head_ast)
 		{
 			free_internal_use_structs(sh);
 			continue ;
 		}
+		print_ast(sh->head_ast, 1);
 		expand_ast(sh->head_ast, sh);
+		print_ast(sh->head_ast, 1);
 		if (!sh->head_tokens || !sh->head_ast)
 		{
 			free_internal_use_structs(sh);

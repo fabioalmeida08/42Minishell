@@ -18,7 +18,7 @@ static void	update_work_dirs(t_shell *sh, char *old_pwd)
 
 	if (getcwd(cwd, 4096) == NULL)
 	{
-		perror("minishell: cd: error geting current dir");
+		perror("Minishell> cd: error geting current dir");
 		return ;
 	}
 	if (old_pwd)
@@ -35,7 +35,7 @@ bool	change_home(t_shell *sh)
 	cwd = get_env_value(sh->env_list, "PWD");
 	if (chdir(home_dir) != 0)
 	{
-		ft_putstr_fd("minishell: cd: cannot find HOME", 2);
+		ft_putstr_fd("Minishell> cd: cannot find HOME", 2);
 		sh->exit_status = 1;
 	}
 	else
@@ -61,7 +61,7 @@ void	builtin_cd(char **cmd, t_shell *sh)
 	target_dir = cmd[1];
 	if (chdir(target_dir) != 0)
 	{
-		ft_putstr_fd("minishell: cd: ", 2);
+		ft_putstr_fd("Minishell> cd: ", 2);
 		perror(cmd[1]);
 		sh->exit_status = 1;
 	}

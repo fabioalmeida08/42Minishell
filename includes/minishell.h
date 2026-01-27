@@ -37,8 +37,6 @@ typedef enum e_token_type
 {
 	TK_WORD,
 	TK_PIPE,
-	TK_AND,
-	TK_OR,
 	TK_PAREN_OPEN,
 	TK_PAREN_CLOSE,
 	TK_REDIR_IN,
@@ -51,9 +49,7 @@ typedef enum e_token_type
 typedef enum e_node_type
 {
 	NODE_CMD,
-	NODE_PIPE,
-	NODE_AND,
-	NODE_OR
+	NODE_PIPE
 }	t_node_type;
 
 typedef enum e_redir_type
@@ -116,14 +112,12 @@ typedef struct s_shell
 	bool		interactive;
 }	t_shell;
 
-//MINISHELL(MAIN)
 void	interactive_mode(t_shell *sh);
 void	non_interactive_mode(t_shell *sh);
 void	set_signal_status(t_shell *sh);
 void	free_internal_use_structs(t_shell *sh);
 void	free_all_structs(t_shell *sh);
 
-//LEXER/TOKEN
 t_token	*handle_operator(const char **str);
 t_token	*ft_strtok(const char *str, t_shell *sh);
 void	lexer_syntax_error(t_token *token, t_shell *sh);
@@ -133,17 +127,15 @@ void	add_token_back(t_token **head, t_token *new_token);
 void	ft_free_tokens(t_token *tokens);
 char	*extract_word(const char **str);
 
-//REDIRECTION
+void	handle_redirection(t_ast *node, t_token *redir, t_token *target);
 bool	is_redir(t_token_type type);
 void	add_redir(t_ast *node, t_redirect *new_redir);
-void	handle_redirection(t_ast *node, t_token *redir, t_token *target);
 
-//SIGNAL
-void	handle_sigint(int sig);
 void	setup_interactive_parent_signals(void);
+void	handle_sigint(int sig);
 void	setup_child_signals(void);
 void	setup_execution_signals(void);
-//INIT_ENV
+
 void	init_env(char **envp, t_shell *shell_vars);
 void	free_env_list(t_env *env_list);
 char	**env_to_envp(t_env *env);
@@ -155,26 +147,21 @@ int		update_env_var(t_env *env_list, char *key, char *value);
 int		remove_env_var(t_env **env_list, char *key);
 void	update_shlvl(t_shell *shell_vars);
 
-//SIMPLE EXECVE
-void	execute_cmd(t_ast *ast, t_shell *sh);
-// void	execve_cmd(char **input, t_shell *sh);
 void	execve_cmd(t_ast *ast, t_shell *sh);
+void	execute_cmd(t_ast *ast, t_shell *sh);
 void	execute_pipe(t_ast *ast, t_shell *sh);
 void	execute_ast(t_ast *ast, t_shell *sh);
 
-//EXECV
-char	*try_path(char *dir, char *cmd);
 void	execute_cmd(t_ast *ast, t_shell *sh);
+char	*try_path(char *dir, char *cmd);
 void	execute_ast(t_ast *ast, t_shell *sh);
-
 char	*search_in_paths(char **paths, char *cmd);
 char	*find_path(char *cmd, t_shell *sh);
 void	exec_child(char *path, char **input, t_shell *sh);
 void	exec_parent(pid_t pid, t_shell *sh);
-// int	check_redirections(t_ast *node);
 int		check_redirections(t_ast *node, t_shell *sh);
 void	execute_builtin_with_redir(t_ast *ast, t_shell *sh);
-//BUILTIN
+
 void	init_builtin(t_shell *sh);
 int		is_builtin(char **cmd, t_shell *sh);
 void	exec_builtin(char **cmd, t_shell *sh);
@@ -187,11 +174,8 @@ int		update_env_var(t_env *env_list, char *key, char *value);
 void	builtin_echo(char **cmd, t_shell *sh);
 void	builtin_exit(char **cmd, t_shell *sh);
 
-//PARSER
 t_ast	*create_node(t_node_type type);
 void	paren_depth_checker(int *depth, t_token *current);
-t_token	*find_last_logical_node(t_token *start, t_token *end);
-t_ast	*parser_logical(t_token *start, t_token *end, t_shell *sh);
 t_token	*find_last_node(t_token *start, t_token *end, t_token_type to_find);
 t_ast	*parser_pipe(t_token *start, t_token *end, t_shell *sh);
 t_ast	*simple_cmd(t_token *start, t_token *end, t_shell *sh);
@@ -200,7 +184,6 @@ void	syntax_error(t_token *token, t_shell *sh);
 void	free_ast(t_ast *node);
 void	free_cmd(t_redirect *redir, char **args);
 
-//EXPANDER
 bool	expand_ast(t_ast *node, t_shell *sh);
 char	**expand_word(char *str, t_shell *sh);
 void	expand_and_remove_quotes(char *str, t_shell *sh, char ***args);
@@ -213,9 +196,8 @@ char	*ft_strjoin_free(char *s1, char *s2);
 void	append_one(char ***args, char *arg);
 void	normalize_heredoc(t_redirect *redirs);
 int		process_heredoc(char *delimiter, bool expand, t_shell *sh);
-
 void	free_all_structs(t_shell *sh);
-//DEBUG
+
 void	print_ast(t_ast *node, int depth);
 void	print_tokens(t_token *tokens);
 #endif

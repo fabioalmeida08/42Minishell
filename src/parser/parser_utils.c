@@ -33,10 +33,6 @@ void	syntax_error(t_token *tok, t_shell *sh)
 			ft_putendl_fd(">>", 2);
 		else if (tok->type == TK_REDIR_HEREDOC)
 			ft_putendl_fd("<<", 2);
-		else if (tok->type == TK_AND)
-			ft_putendl_fd("&&", 2);
-		else if (tok->type == TK_OR)
-			ft_putendl_fd("||", 2);
 	}
 	sh->exit_status = 2;
 }
