@@ -173,6 +173,7 @@ void	builtin_cd(char **cmd, t_shell *sh);
 int		update_env_var(t_env *env_list, char *key, char *value);
 void	builtin_echo(char **cmd, t_shell *sh);
 void	builtin_exit(char **cmd, t_shell *sh);
+void	export_print(t_shell *sh);
 
 t_ast	*create_node(t_node_type type);
 void	paren_depth_checker(int *depth, t_token *current);

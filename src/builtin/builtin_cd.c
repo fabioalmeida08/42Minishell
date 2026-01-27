@@ -53,7 +53,7 @@ void	builtin_cd(char **cmd, t_shell *sh)
 
 	if (getcwd(old_pwd, 4096) == NULL)
 		ft_strlcpy(old_pwd, get_env_value(sh->env_list, "PWD"), 4096);
-	if (!cmd[1] || ft_strcmp(cmd[1], "~"))
+	if (!cmd[1] || ft_strcmp(cmd[1], "~") == 0)
 	{
 		change_home(sh);
 		return ;

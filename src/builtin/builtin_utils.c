@@ -63,7 +63,7 @@ int	is_builtin(char **cmd, t_shell *sh)
 	res = 0;
 	while (sh->g_builtins[i].name)
 	{
-		if (ft_strcmp(cmd[0], sh->g_builtins[i].name))
+		if (ft_strcmp(cmd[0], sh->g_builtins[i].name) == 0)
 		{
 			res = 1;
 			break ;
@@ -80,7 +80,7 @@ void	exec_builtin(char **cmd, t_shell *sh)
 	i = 0;
 	while (sh->g_builtins[i].name)
 	{
-		if (ft_strcmp(cmd[0], sh->g_builtins[i].name))
+		if (ft_strcmp(cmd[0], sh->g_builtins[i].name) == 0)
 		{
 			sh->g_builtins[i].func(cmd, sh);
 			break ;

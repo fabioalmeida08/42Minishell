@@ -16,7 +16,7 @@ t_env	*get_env_node(t_env *env_list, char *key)
 {
 	while (env_list)
 	{
-		if (ft_strcmp(env_list->key, key))
+		if (ft_strcmp(env_list->key, key) == 0)
 			return (env_list);
 		env_list = env_list->next;
 	}
@@ -55,7 +55,7 @@ int	remove_env_var(t_env **env_list, char *key)
 	prev = NULL;
 	while (temp)
 	{
-		if (ft_strcmp(temp->key, key))
+		if (ft_strcmp(temp->key, key) == 0)
 		{
 			if (prev)
 				prev->next = temp->next;
