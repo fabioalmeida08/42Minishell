@@ -35,10 +35,7 @@ static int	open_target(t_redirect *tmp, t_shell *sh)
 		flags = O_WRONLY | O_CREAT | O_APPEND;
 	fd = open(tmp->target, flags, 0644);
 	if (fd == -1)
-	{
-		ft_putstr_fd("Minishell> ", 2);
 		perror(tmp->target);
-	}
 	return (fd);
 }
 
