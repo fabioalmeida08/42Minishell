@@ -14,7 +14,7 @@
 
 void	syntax_error(t_token *tok, t_shell *sh)
 {
-	ft_putstr_fd("syntax error near token ", 2);
+	ft_putstr_fd("Minishell> syntax error near unexpected token ", 2);
 	if (tok && tok->value)
 		ft_putendl_fd(tok->value, 2);
 	else if (tok)
