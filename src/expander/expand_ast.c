@@ -34,18 +34,18 @@ static char	**expand_args(char **args, t_shell *sh)
 
 static bool	expand_redir(t_redirect *redirs, t_shell *sh)
 {
-	bool	error;
 	char	*new;
 
 	while (redirs)
 	{
 		if (redirs->type != REDIR_HEREDOC)
 		{
-			new = expand_redir_target(redirs->target, sh, &error);
-			if (error)
+			new = expand_redir_target(redirs->target, sh);
+			if (!new)
 			{
 				sh->exit_status = 1;
-				ft_putendl_fd("ambiguous redirect", 2);
+				ft_putstr_fd(redirs->target, 2);
+				ft_putendl_fd(": ambiguous redirect", 2);
 				return (false);
 			}
 			free(redirs->target);
