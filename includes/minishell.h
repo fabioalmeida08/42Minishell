@@ -189,7 +189,7 @@ bool	expand_ast(t_ast *node, t_shell *sh);
 char	**expand_word(char *str, t_shell *sh);
 void	expand_and_remove_quotes(char *str, t_shell *sh, char ***args);
 void	append_all(char ***dst, char **src);
-char	*expand_redir_target(char *target, t_shell *sh, bool *error);
+char	*expand_redir_target(char *target, t_shell *sh);
 int		args_len(char **args);
 void	append_all(char ***dst, char **src);
 char	*ft_charjoin_free(char *s, char c);

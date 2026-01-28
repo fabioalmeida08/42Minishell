@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-static	bool has_space(char *str)
+static bool	has_space(char *str)
 {
 	while (str && *str)
 	{
@@ -23,22 +23,22 @@ static	bool has_space(char *str)
 	return (false);
 }
 
-char	*expand_redir_target(char *target, t_shell *sh, bool *error)
+char	*expand_redir_target(char *target, t_shell *sh)
 {
 	char	**expanded;
 	char	*res;
+	bool	has_quotes;
 
-	*error = false;
+	has_quotes = (target[0] == '"' || target[0] == '\'');
 	expanded = ft_calloc(1, sizeof(char *));
 	expanded[0] = NULL;
 	expand_and_remove_quotes(target, sh, &expanded);
-	if (!expanded || !expanded[0] || has_space(expanded[0]) || expanded[1])
-	{
-		*error = true;
-		free_envp(expanded);
-		return (NULL);
-	}
-	res = ft_strdup(expanded[0]);
+	if (!expanded[0])
+		res = ft_strdup("");
+	else if (!has_quotes && has_space(expanded[0]))
+		res = NULL;
+	else
+		res = ft_strdup(expanded[0]);
 	free_envp(expanded);
 	return (res);
 }
