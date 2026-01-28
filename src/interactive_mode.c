@@ -70,7 +70,9 @@ void	interactive_mode(t_shell *sh)
 			free_internal_use_structs(sh);
 			continue ;
 		}
+		print_ast(sh->head_ast, 1);
 		expand_ast(sh->head_ast, sh);
+		print_ast(sh->head_ast, 1);
 		if (!sh->head_tokens || !sh->head_ast)
 		{
 			free_internal_use_structs(sh);

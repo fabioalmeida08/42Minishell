@@ -45,7 +45,8 @@ static bool	expand_redir(t_redirect *redirs, t_shell *sh)
 			if (error)
 			{
 				sh->exit_status = 1;
-				ft_putendl_fd("ambiguous redirect", 2);
+				ft_putstr_fd(redirs->target, 2);
+				ft_putendl_fd(": ambiguous redirect", 2);
 				return (false);
 			}
 			free(redirs->target);

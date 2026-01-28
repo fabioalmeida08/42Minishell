@@ -12,6 +12,17 @@
 
 #include "../../includes/minishell.h"
 
+static	bool has_space(char *str)
+{
+	while (str && *str)
+	{
+		if (*str == ' ')
+			return (true);
+		str++;
+	}
+	return (false);
+}
+
 char	*expand_redir_target(char *target, t_shell *sh, bool *error)
 {
 	char	**expanded;
@@ -21,7 +32,7 @@ char	*expand_redir_target(char *target, t_shell *sh, bool *error)
 	expanded = ft_calloc(1, sizeof(char *));
 	expanded[0] = NULL;
 	expand_and_remove_quotes(target, sh, &expanded);
-	if (!expanded || !expanded[0] || expanded[1])
+	if (!expanded || !expanded[0] || has_space(expanded[0]) || expanded[1])
 	{
 		*error = true;
 		free_envp(expanded);
