@@ -6,105 +6,56 @@
 /*   By: fabialme <fabialme@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 10:09:27 by fabialme          #+#    #+#             */
-/*   Updated: 2026/01/22 10:09:52 by fabialme         ###   ########.fr       */
+/*   Updated: 2026/01/28 19:27:08 by fabialme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static char	*strjoin_free_s1(char *s1, char *s2)
+static int	handle_eof_or_signal(char *line)
 {
-	char	*new_str;
-
-	if (!s1)
-		s1 = ft_strdup("");
-	if (!s2)
-		s2 = "";
-	new_str = ft_strjoin(s1, s2);
-	free(s1);
-	return (new_str);
+	if (!line)
+	{
+		if (g_signal_status == SIGINT)
+		{
+			open("/dev/tty", O_RDONLY);
+			return (1);
+		}
+		ft_putstr_fd("minishell: warning: here-document delimited by EOF\n", 2);
+		return (1);
+	}
+	return (0);
 }
 
-static char	*extract_var_value(char *line, int *i, t_shell *sh)
+static void	process_line_content(int fd, char *line, bool expand, t_shell *sh)
 {
-	int		start;
-	char	*key;
-	char	*val;
 	char	*tmp;
 
-	(*i)++;
-	if (line[*i] == '?')
+	if (expand)
 	{
-		(*i)++;
-		return (ft_itoa(sh->exit_status));
+		tmp = expand_heredoc_line(line, sh);
+		free(line);
+		line = tmp;
 	}
-	start = *i;
-	while (line[*i] && (ft_isalnum(line[*i]) || line[*i] == '_'))
-		(*i)++;
-	key = ft_substr(line, start, *i - start);
-	tmp = get_env_value(sh->env_list, key);
-	if (tmp)
-		val = ft_strdup(tmp);
-	else
-		val = ft_strdup("");
-	free(key);
-	return (val);
-}
-
-static char	*expand_heredoc_line(char *line, t_shell *sh)
-{
-	int		i;
-	char	*final;
-	char	*val;
-	char	tmp[2];
-
-	i = 0;
-	final = ft_strdup("");
-	while (line[i])
-	{
-		if (line[i] == '$' && (ft_isalnum(line[i + 1])
-				|| line[i + 1] == '_' || line[i + 1] == '?'))
-		{
-			val = extract_var_value(line, &i, sh);
-			final = strjoin_free_s1(final, val);
-			free(val);
-		}
-		else
-		{
-			tmp[0] = line[i++];
-			tmp[1] = '\0';
-			final = strjoin_free_s1(final, tmp);
-		}
-	}
-	return (final);
+	ft_putendl_fd(line, fd);
+	free(line);
 }
 
 static void	write_heredoc_loop(int fd, char *delim, bool expand, t_shell *sh)
 {
 	char	*line;
-	char	*tmp;
 
 	while (1)
 	{
 		line = readline("> ");
-		if (!line)
-		{
-			ft_putstr_fd("warning: here-document delimited by EOF\n", 2);
+		if (handle_eof_or_signal(line))
 			break ;
-		}
 		if (ft_strcmp(line, delim) == 0)
 		{
 			free(line);
 			break ;
 		}
-		if (expand)
-		{
-			tmp = expand_heredoc_line(line, sh);
-			free(line);
-			line = tmp;
-		}
-		ft_putendl_fd(line, fd);
-		free(line);
+		process_line_content(fd, line, expand, sh);
 	}
 }
 
@@ -112,17 +63,21 @@ int	process_heredoc(char *delimiter, bool expand, t_shell *sh)
 {
 	int		fd;
 	char	*filename;
+	int		read_fd;
 
 	filename = "/tmp/.mshell_heredoc_tmp";
 	fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (fd == -1)
-	{
-		perror("heredoc open failed");
-		return (-1);
-	}
+		return (perror("heredoc open failed"), -1);
+	signal(SIGINT, heredoc_sigint_handler);
 	write_heredoc_loop(fd, delimiter, expand, sh);
 	close(fd);
-	fd = open(filename, O_RDONLY);
+	if (g_signal_status == SIGINT)
+	{
+		free_all_structs(sh);
+		exit(130);
+	}
+	read_fd = open(filename, O_RDONLY);
 	unlink(filename);
-	return (fd);
+	return (read_fd);
 }
