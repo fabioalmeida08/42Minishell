@@ -26,7 +26,7 @@ static int	open_target(t_redirect *tmp, t_shell *sh)
 	int	flags;
 
 	if (tmp->type == REDIR_HEREDOC)
-		return (process_heredoc(tmp->target, true, sh));
+		return (process_heredoc(tmp->target, tmp->expand, sh));
 	if (tmp->type == REDIR_IN)
 		flags = O_RDONLY;
 	else if (tmp->type == REDIR_OUT)
