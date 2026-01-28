@@ -25,8 +25,17 @@ static char	*get_cmd_path(char *cmd, t_shell *sh)
 
 static void	handle_cmd_not_found(char *cmd, t_shell *sh)
 {
-	ft_putstr_fd(cmd, 2);
-	ft_putstr_fd(": command not found\n", 2);
+	if (ft_strchr(cmd, '/'))
+	{
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(cmd, 2);
+		ft_putstr_fd(": No such file or directory\n", 2);
+	}
+	else
+	{
+		ft_putstr_fd(cmd, 2);
+		ft_putstr_fd(": command not found\n", 2);
+	}
 	free_all_structs(sh);
 	exit(127);
 }

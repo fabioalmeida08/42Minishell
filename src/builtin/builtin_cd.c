@@ -61,7 +61,7 @@ void	builtin_cd(char **cmd, t_shell *sh)
 	target_dir = cmd[1];
 	if (chdir(target_dir) != 0)
 	{
-		ft_putstr_fd("cd: ", 2);
+		ft_putstr_fd("minishell: cd: ", 2);
 		perror(cmd[1]);
 		sh->exit_status = 1;
 	}

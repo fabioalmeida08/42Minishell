@@ -32,5 +32,5 @@ int	main(int argc, char *argv[], char *envp[])
 	}
 	else
 		non_interactive_mode(&sh);
-	return (0);
+	return (sh.exit_status);
 }
