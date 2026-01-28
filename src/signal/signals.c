@@ -12,6 +12,14 @@
 
 #include "../../includes/minishell.h"
 
+void	heredoc_sigint_handler(int sig)
+{
+	(void)sig;
+	g_signal_status = SIGINT;
+	write(1, "\n", 1);
+	close(STDIN_FILENO);
+}
+
 void	handle_sigint(int sig)
 {
 	g_signal_status = sig;

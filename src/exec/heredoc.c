@@ -89,7 +89,9 @@ static void	write_heredoc_loop(int fd, char *delim, bool expand, t_shell *sh)
 		line = readline("> ");
 		if (!line)
 		{
-			ft_putstr_fd("warning: here-document delimited by EOF\n", 2);
+			if (g_signal_status == SIGINT)
+				break ;
+			ft_putstr_fd("minishell: warning: here-document delimited by end-of-file\n", 2);
 			break ;
 		}
 		if (ft_strcmp(line, delim) == 0)
@@ -112,17 +114,21 @@ int	process_heredoc(char *delimiter, bool expand, t_shell *sh)
 {
 	int		fd;
 	char	*filename;
+	int		read_fd;
 
 	filename = "/tmp/.mshell_heredoc_tmp";
 	fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (fd == -1)
-	{
-		perror("heredoc open failed");
-		return (-1);
-	}
+		return (perror("heredoc open failed"), -1);
+	signal(SIGINT, heredoc_sigint_handler);
 	write_heredoc_loop(fd, delimiter, expand, sh);
 	close(fd);
-	fd = open(filename, O_RDONLY);
+	if (g_signal_status == SIGINT)
+	{
+		free_all_structs(sh);
+		exit(130);
+	}
+	read_fd = open(filename, O_RDONLY);
 	unlink(filename);
-	return (fd);
+	return (read_fd);
 }
