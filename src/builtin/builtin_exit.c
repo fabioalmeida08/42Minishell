@@ -12,15 +12,15 @@
 
 #include "../../includes/minishell.h"
 
-static bool	is_numeric (char *ptr)
+static bool	is_numeric(char *ptr)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (ptr[i])
 		if (!ft_isdigit(ptr[i++]))
-			return false;
-	return true;
+			return (false);
+	return (true);
 }
 
 static bool	check_numeric(char **cmd, int i)
@@ -49,12 +49,11 @@ static bool	check_number_args(char **cmd, int i)
 		return (false);
 	}
 	return (true);
-
 }
 
 void	builtin_exit(char **cmd, t_shell *sh)
 {
-	int i;
+	int	i;
 
 	i = 1;
 	if (!cmd[i])

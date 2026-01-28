@@ -119,6 +119,6 @@ re: fclean all
 	@echo "$(BLUE)🔄 $(NAME) rebuild$(RESET)"
 
 run: all
-	valgrind -s --suppressions=readline.supp --track-fds=yes --leak-check=full --show-leak-kinds=all ./minishell
+	valgrind -q -s --suppressions=readline.supp --track-fds=yes --leak-check=full --show-leak-kinds=all ./minishell
 
 .PHONY: all clean fclean re
