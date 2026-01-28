@@ -39,6 +39,7 @@ static void	exec_childs(t_ast *node, int *fd, int dir, t_shell *sh)
 	close(fd[0]);
 	close(fd[1]);
 	execute_ast(node, sh);
+	free_all_structs(sh);
 	exit(sh->exit_status);
 }
 
