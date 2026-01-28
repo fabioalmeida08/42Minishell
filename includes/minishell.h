@@ -202,4 +202,5 @@ void	free_all_structs(t_shell *sh);
 void	print_ast(t_ast *node, int depth);
 void	print_tokens(t_token *tokens);
 void	heredoc_sigint_handler(int sig);
+char	*expand_heredoc_line(char *line, t_shell *sh);
 #endif

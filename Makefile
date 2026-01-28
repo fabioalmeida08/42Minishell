@@ -66,6 +66,7 @@ EXEC_SRC :=		exec.c \
 				heredoc.c \
 				execve_cmd.c \
 				execve_utils.c \
+				heredoc_utils.c
 
 EXPANDER_SRC := expand_ast.c \
 				expand_word.c \
