@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-static int	count_args(t_token *start, t_token *end)
+static int	count_args(t_token *start, t_token *end, t_token **err_token)
 {
 	int		count;
 
@@ -24,11 +24,17 @@ static int	count_args(t_token *start, t_token *end)
 		else if (is_redir(start->type))
 		{
 			if (!start->next || start->next->type != TK_WORD)
+			{
+				*err_token = start;
 				return (-1);
+			}
+			if (start->next->next && start->next->next->type == TK_WORD)
+			{
+				*err_token = start->next->next;
+				return (-1);
+			}
 			start = start->next;
 		}
-		else
-			return (-1);
 		start = start->next;
 	}
 	return (count);
@@ -49,7 +55,7 @@ static t_ast	*init_cmd_node(void)
 	return (node);
 }
 
-static bool	fill_cmd(t_token *start, t_token *end, t_ast *node, t_shell *sh)
+static bool	fill_cmd(t_token *start, t_token *end, t_ast *node)
 {
 	int		i;
 
@@ -57,18 +63,15 @@ static bool	fill_cmd(t_token *start, t_token *end, t_ast *node, t_shell *sh)
 	while (start && start != end)
 	{
 		if (start->type == TK_WORD)
-			node->args[i++] = ft_strdup(start->value);
-		else if (is_redir(start->type))
 		{
-			if (!start->next || start->next->type != TK_WORD)
-			{
-				syntax_error(start, sh);
-				return (false);
-			}
-			handle_redirection(node, start, start->next);
+			node->args[i++] = ft_strdup(start->value);
 			start = start->next;
 		}
-		start = start->next;
+		else if (is_redir(start->type))
+		{
+			handle_redirection(node, start, start->next);
+			start = start->next->next;
+		}
 	}
 	node->args[i] = NULL;
 	return (true);
@@ -78,8 +81,14 @@ t_ast	*simple_cmd(t_token *start, t_token *end, t_shell *sh)
 {
 	int		argc;
 	t_ast	*new_node;
+	t_token	*err_token;
 
-	argc = count_args(start, end);
+	argc = count_args(start, end, &err_token);
+	if (argc < 0)
+	{
+		syntax_error(err_token, sh);
+		return (NULL);
+	}
 	new_node = init_cmd_node();
 	if (!new_node)
 		return (NULL);
@@ -89,7 +98,7 @@ t_ast	*simple_cmd(t_token *start, t_token *end, t_shell *sh)
 		free(new_node);
 		return (NULL);
 	}
-	if (!fill_cmd(start, end, new_node, sh))
+	if (!fill_cmd(start, end, new_node))
 	{
 		free_ast(new_node);
 		return (NULL);

@@ -23,10 +23,11 @@ PARSER_DIR := $(SRCS_DIR)/parser
 REDIRECTION_DIR := $(SRCS_DIR)/redirection
 DEBUGING_DIR := $(SRCS_DIR)/debuging
 EXEC_DIR := $(SRCS_DIR)/exec
+EXPANDER_DIR := $(SRCS_DIR)/expander
 
 SRCS := 		main.c \
 				interactive_mode.c \
-				non_interactive_mode.c \
+				non_interactive_mode.c
 
 LEXER_SRC := 	lexer_utils.c \
 				token_utils.c \
@@ -36,42 +37,56 @@ LEXER_SRC := 	lexer_utils.c \
 
 PARSER_SRC := 	parser_cmd.c \
 				parser_pipe.c \
-				parser_logical.c \
 				parser_utils.c \
 				simple_cmd.c 
 
-REDIRECTION_SRC := handle_redirection.c \
+REDIRECTION_SRC := handle_redirection.c
 
-SIGNAL_SRC := signals.c \
+SIGNAL_SRC := signals.c
 
 INIT_ENV_SRC := init_env.c \
 				init_env_utils.c \
-				env_to_envp.c \
-
-SIMPLE_EXECVE_SRC := execve_cmd.c \
-										 execve_utils.c
+				env_to_envp.c
 
 BUILTIN_SRC :=	builtin_utils.c \
 				builtin_env.c \
 				builtin_pwd.c \
 				builtin_export.c \
 				builtin_unset.c \
+				builtin_cd.c \
+				builtin_echo.c \
+				builtin_exit.c \
+				builtin_exit_utils.c \
+				builtin_export_utils.c \
+				builtin_cd_utils.c
 
 DEBUGING_SRC := print_tokens.c \
 				print_ast.c
-EXEC_SRC := exec_pipe.c
+
+EXEC_SRC :=		exec.c \
+				redirections.c \
+				heredoc.c \
+				execve_cmd.c \
+				execve_utils.c \
+				heredoc_utils.c
+
+EXPANDER_SRC := expand_ast.c \
+				expand_word.c \
+				expand_redirs.c \
+				expander.c \
+				expander_utils.c \
 
 SRCS := $(addprefix $(SRCS_DIR)/, $(SRCS))
 LEXER_SRC := $(addprefix $(LEXER_DIR)/, $(LEXER_SRC))
 PARSER_SRC := $(addprefix $(PARSER_DIR)/, $(PARSER_SRC))
 SIGNAL_SRC := $(addprefix $(SIGNAL_DIR)/, $(SIGNAL_SRC))
 INIT_ENV_SRC := $(addprefix $(INIT_ENV_DIR)/, $(INIT_ENV_SRC))
-SIMPLE_EXECVE_SRC := $(addprefix $(SIMPLE_EXECVE_DIR)/, $(SIMPLE_EXECVE_SRC))
 BUILTIN_SRC := $(addprefix $(BUILTIN_DIR)/, $(BUILTIN_SRC))
 REDIRECTION_SRC := $(addprefix $(REDIRECTION_DIR)/, $(REDIRECTION_SRC))
 DEBUGING_SRC := $(addprefix $(DEBUGING_DIR)/, $(DEBUGING_SRC))
 EXEC_SRC := $(addprefix $(EXEC_DIR)/, $(EXEC_SRC))
-ALL_SRCS := $(SRCS) $(LEXER_SRC) $(SIGNAL_SRC) $(INIT_ENV_SRC) $(SIMPLE_EXECVE_SRC) $(BUILTIN_SRC) $(PARSER_SRC) $(REDIRECTION_SRC) $(DEBUGING_SRC) $(EXEC_SRC)
+EXPANDER_SRC := $(addprefix $(EXPANDER_DIR)/, $(EXPANDER_SRC))
+ALL_SRCS := $(SRCS) $(LEXER_SRC) $(SIGNAL_SRC) $(INIT_ENV_SRC) $(BUILTIN_SRC) $(PARSER_SRC) $(REDIRECTION_SRC) $(DEBUGING_SRC) $(EXEC_SRC) $(EXPANDER_SRC)
 OBJS := $(ALL_SRCS:%.c=$(OBJS_DIR)/%.o)
 
 DEPS := $(OBJS:.o=.d)
@@ -105,5 +120,8 @@ fclean: clean
 re: fclean all
 	@make $(MAKEFLAGS) -C $(LIBFT_PATH) re
 	@echo "$(BLUE)🔄 $(NAME) rebuild$(RESET)"
+
+run: all
+	valgrind -q -s --suppressions=readline.supp --track-fds=yes --leak-check=full --show-leak-kinds=all ./minishell
 
 .PHONY: all clean fclean re

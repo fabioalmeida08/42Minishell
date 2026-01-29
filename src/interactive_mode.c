@@ -3,33 +3,31 @@
 /*                                                        :::      ::::::::   */
 /*   interactive_mode.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 14:32:35 by bolegari          #+#    #+#             */
-/*   Updated: 2025/12/29 17:54:42 by marvin           ###   ########.fr       */
+/*   Updated: 2026/01/26 18:26:59 by bolegari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	execute_cmd(t_ast *ast, t_shell *sh)
-{
-	if (is_builtin(ast->args, sh))
-		exec_builtin(ast->args, sh);
-	else
-		execve_cmd(ast->args, sh);
-}
+volatile int	g_signal_status;
 
-void	execute_ast(t_ast *ast, t_shell *sh)
+void	set_signal_status(t_shell *sh)
 {
-	if (ast->type == NODE_CMD)
-		execute_cmd(ast, sh);
-	if (ast->type == NODE_PIPE)
-		execute_pipe(ast, sh);
+	if (g_signal_status != 0)
+	{
+		sh->exit_status = 128 + g_signal_status;
+		g_signal_status = 0;
+	}
 }
 
 void	free_internal_use_structs(t_shell *sh)
 {
+	if (sh->input)
+		free(sh->input);
+	sh->input = NULL;
 	if (sh->head_ast)
 	{
 		free_ast(sh->head_ast);
@@ -50,30 +48,37 @@ void	free_all_structs(t_shell *sh)
 	free_env_list(sh->env_list);
 }
 
+static void	clear_and_free(t_shell *sh)
+{
+	rl_clear_history();
+	free_all_structs(sh);
+}
+
 void	interactive_mode(t_shell *sh)
 {
-	char	*input;
-
-	while (1)
+	while (sh->running)
 	{
-		input = readline("Minishell> ");
-		if (input == NULL)
-		{
-			free(input);
+		sh->input = readline("Minishell> ");
+		set_signal_status(sh);
+		if (sh->input == NULL)
 			break ;
-		}
-		add_history(input);
-		sh->head_tokens = ft_tokenize(input, sh);
-		sh->head_ast = parser_logical(sh->head_tokens, NULL, sh);
-		if (!sh->head_tokens || !sh->head_ast)
+		add_history(sh->input);
+		sh->head_tokens = ft_tokenize(sh);
+		sh->head_ast = parser_pipe(sh->head_tokens, NULL, sh);
+		if (!sh->head_ast)
 		{
-			free(input);
+			free_internal_use_structs(sh);
 			continue ;
 		}
-		print_ast(sh->head_ast, 1);
+		expand_ast(sh->head_ast, sh);
+		if (!sh->head_tokens || !sh->head_ast)
+		{
+			free_internal_use_structs(sh);
+			continue ;
+		}
 		execute_ast(sh->head_ast, sh);
-		free_internal_use_structs(sh);
-		free(input);
-  }
-  free_all_structs(sh);
+		if (sh->running)
+			free_internal_use_structs(sh);
+	}
+	clear_and_free(sh);
 }

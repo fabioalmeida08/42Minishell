@@ -6,7 +6,7 @@
 /*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/04 13:48:32 by bolegari          #+#    #+#             */
-/*   Updated: 2025/12/22 10:23:35 by bolegari         ###   ########.fr       */
+/*   Updated: 2026/01/26 16:55:55 by bolegari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,4 +80,21 @@ void	free_envp(char **envp)
 	while (envp[i])
 		free(envp[i++]);
 	free(envp);
+}
+
+void	update_shlvl(t_shell *shell_vars)
+{
+	int		lvl;
+	char	*value;
+	char	*new_value;
+
+	value = get_env_value(shell_vars->env_list, "SHLVL");
+	if (!value)
+		lvl = 0;
+	else
+		lvl = ft_atoi(value);
+	lvl++;
+	new_value = ft_itoa(lvl);
+	update_env_var(shell_vars->env_list, "SHLVL", new_value);
+	free(new_value);
 }

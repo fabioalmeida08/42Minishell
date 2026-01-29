@@ -27,10 +27,6 @@ static int	is_double_operator(const char *s, char op)
 static t_token_type	get_double_operator_type(const char *s, size_t *len)
 {
 	*len = 2;
-	if (is_double_operator(s, '|'))
-		return (TK_OR);
-	if (is_double_operator(s, '&'))
-		return (TK_AND);
 	if (is_double_operator(s, '<'))
 		return (TK_REDIR_HEREDOC);
 	if (is_double_operator(s, '>'))

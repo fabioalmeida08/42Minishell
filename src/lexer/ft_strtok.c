@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/15 15:17:56 by fabialme          #+#    #+#             */
-/*   Updated: 2026/01/02 09:34:26 by marvin           ###   ########.fr       */
+/*   Updated: 2026/01/20 10:59:21 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,9 @@ static int	process_operator(const char **str, t_token **tokens, t_shell *sh)
 	t_token	*token;
 
 	token = handle_operator(str);
-	if (!token || token->type == TK_REDIR_HEREDOC)
+	if (!token)
 	{
-		if (token->type == TK_REDIR_HEREDOC)
-			ft_putstr_fd("HEREDOC IS NOT IMPLEMENTED YET !!! \n", 2);
-		else
-			lexer_syntax_error(*tokens, sh);
+		lexer_syntax_error(*tokens, sh);
 		return (0);
 	}
 	add_token_back(tokens, token);

@@ -6,14 +6,23 @@
 /*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 14:27:46 by bolegari          #+#    #+#             */
-/*   Updated: 2025/11/25 10:16:44 by bolegari         ###   ########.fr       */
+/*   Updated: 2026/01/19 13:20:53 by bolegari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
+void	heredoc_sigint_handler(int sig)
+{
+	(void)sig;
+	g_signal_status = SIGINT;
+	write(1, "\n", 1);
+	close(STDIN_FILENO);
+}
+
 void	handle_sigint(int sig)
 {
+	g_signal_status = sig;
 	if (sig == SIGINT)
 	{
 		write(1, "\n", 1);
@@ -42,6 +51,17 @@ void	setup_child_signals(void)
 	sa.sa_flags = 0;
 	sa.sa_handler = SIG_DFL;
 	sigemptyset(&sa.sa_mask);
+	sigaction(SIGINT, &sa, NULL);
+	sigaction(SIGQUIT, &sa, NULL);
+}
+
+void	setup_execution_signals(void)
+{
+	struct sigaction	sa;
+
+	sa.sa_handler = SIG_IGN;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = 0;
 	sigaction(SIGINT, &sa, NULL);
 	sigaction(SIGQUIT, &sa, NULL);
 }

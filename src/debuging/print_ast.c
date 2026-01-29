@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 17:23:50 by marvin            #+#    #+#             */
-/*   Updated: 2025/12/29 17:23:50 by marvin           ###   ########.fr       */
+/*   Updated: 2026/01/22 15:24:01 by fabialme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,21 @@ static const char	*redir_type_str(t_redir_type type)
 	if (type == REDIR_HEREDOC)
 		return ("<<");
 	return ("?");
+}
+
+static void	print_redir_info(t_redirect *redir, int depth)
+{
+	int	i;
+
+	i = 0;
+	while (i++ < depth + 1)
+		printf("  ");
+	if (redir->type == REDIR_HEREDOC)
+		printf("REDIR %s %s (expand:%d)\n", redir_type_str(redir->type),
+			redir->target, redir->expand);
+	else
+		printf("REDIR %s %s\n", redir_type_str(redir->type),
+			redir->target);
 }
 
 static void	print_cmd(t_ast *node, int depth)
@@ -42,12 +57,7 @@ static void	print_cmd(t_ast *node, int depth)
 	redir = node->redirs;
 	while (redir)
 	{
-		i = 0;
-		while (i++ < depth + 1)
-			printf("  ");
-		printf("REDIR %s %s\n",
-			redir_type_str(redir->type),
-			redir->target);
+		print_redir_info(redir, depth);
 		redir = redir->next;
 	}
 }
@@ -65,10 +75,6 @@ void	print_ast(t_ast *node, int depth)
 		print_cmd(node, depth);
 	else if (node->type == NODE_PIPE)
 		printf("NODE_PIPE\n");
-	else if (node->type == NODE_AND)
-		printf("NODE_AND\n");
-	else if (node->type == NODE_OR)
-		printf("NODE_OR\n");
 	print_ast(node->left, depth + 1);
 	print_ast(node->right, depth + 1);
 }

@@ -6,7 +6,7 @@
 /*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/10 16:09:12 by bolegari          #+#    #+#             */
-/*   Updated: 2025/12/10 16:09:12 by bolegari         ###   ########.fr       */
+/*   Updated: 2026/01/21 09:43:59 by fabialme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,19 @@ static void	fill_builtins(t_builtin *b)
 	b[2].func = builtin_export;
 	b[3].name = "unset";
 	b[3].func = builtin_unset;
-	b[4].name = NULL;
-	b[4].func = NULL;
+	b[4].name = "cd";
+	b[4].func = builtin_cd;
+	b[5].name = "echo";
+	b[5].func = builtin_echo;
+	b[6].name = "exit";
+	b[6].func = builtin_exit;
+	b[7].name = NULL;
+	b[7].func = NULL;
 }
 
 void	init_builtin(t_shell *sh)
 {
-	t_builtin	builtins[5];
+	t_builtin	builtins[8];
 	int			n;
 
 	fill_builtins(builtins);
@@ -57,7 +63,7 @@ int	is_builtin(char **cmd, t_shell *sh)
 	res = 0;
 	while (sh->g_builtins[i].name)
 	{
-		if (ft_strcmp(cmd[0], sh->g_builtins[i].name))
+		if (ft_strcmp(cmd[0], sh->g_builtins[i].name) == 0)
 		{
 			res = 1;
 			break ;
@@ -72,10 +78,9 @@ void	exec_builtin(char **cmd, t_shell *sh)
 	int	i;
 
 	i = 0;
-	printf("BUILTIN !!! \n");
 	while (sh->g_builtins[i].name)
 	{
-		if (ft_strcmp(cmd[0], sh->g_builtins[i].name))
+		if (ft_strcmp(cmd[0], sh->g_builtins[i].name) == 0)
 		{
 			sh->g_builtins[i].func(cmd, sh);
 			break ;

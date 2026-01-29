@@ -6,7 +6,7 @@
 /*   By: bolegari <bolegari@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/27 10:04:53 by bolegari          #+#    #+#             */
-/*   Updated: 2025/12/10 16:11:22 by bolegari         ###   ########.fr       */
+/*   Updated: 2026/01/06 12:11:31 by bolegari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ t_env	*get_env_node(t_env *env_list, char *key)
 {
 	while (env_list)
 	{
-		if (ft_strcmp(env_list->key, key))
+		if (ft_strcmp(env_list->key, key) == 0)
 			return (env_list);
 		env_list = env_list->next;
 	}
@@ -55,7 +55,7 @@ int	remove_env_var(t_env **env_list, char *key)
 	prev = NULL;
 	while (temp)
 	{
-		if (ft_strcmp(temp->key, key))
+		if (ft_strcmp(temp->key, key) == 0)
 		{
 			if (prev)
 				prev->next = temp->next;
