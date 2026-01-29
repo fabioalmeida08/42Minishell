@@ -1,17 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtin_cd.c                                       :+:      :+:    :+:   */
+/*   builtin_cd_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fabialme <fabialme@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/05 14:48:54 by fabialme          #+#    #+#             */
-/*   Updated: 2026/01/06 11:45:22 by fabialme         ###   ########.fr       */
+/*   Created: 2026/01/29 11:42:57 by fabialme          #+#    #+#             */
+/*   Updated: 2026/01/29 11:44:22 by fabialme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-#include <unistd.h>
 
 static bool	cd_validate_args(char **cmd)
 {
@@ -51,7 +50,7 @@ bool	change_home(t_shell *sh)
 	cwd = get_env_value(sh->env_list, "PWD");
 	if (chdir(home_dir) != 0)
 	{
-		ft_putstr_fd("cd: cannot find HOME", 2);
+		ft_putstr_fd("cd: cannot find HOME\n", 2);
 		sh->exit_status = 1;
 	}
 	else
@@ -62,49 +61,12 @@ bool	change_home(t_shell *sh)
 	return (true);
 }
 
-void	change_old_dir(t_shell *sh)
+void	change_directory_path(char *path, char *old_pwd, t_shell *sh)
 {
-	char *curr_dir;
-	char *old_dir;
-
-	curr_dir = get_env_value(sh->env_list, "PWD");
-	old_dir = get_env_value(sh->env_list, "OLDPWD");
-	if (chdir(old_dir) != 0)
-	{
-		ft_putstr_fd("cd: cannot find dir", 2);
-		sh->exit_status = 1;
-	}
-	else
-	{
-		update_work_dirs(sh, curr_dir);
-		sh->exit_status = 0;
-	}
-}
-
-void	builtin_cd(char **cmd, t_shell *sh)
-{
-	char	*target_dir;
-	char	old_pwd[4096];
-
-	if (!cd_validate_args(cmd))
-		return ;
-	if (getcwd(old_pwd, 4096) == NULL)
-		ft_strlcpy(old_pwd, get_env_value(sh->env_list, "PWD"), 4096);
-	if (!cmd[1] || ft_strcmp(cmd[1], "~") == 0)
-	{
-		change_home(sh);
-		return ;
-	}
-	if (ft_strcmp(cmd[1], "-") == 0)
-	{
-		change_old_dir(sh);
-		return ;
-	}
-	target_dir = cmd[1];
-	if (chdir(target_dir) != 0)
+	if (chdir(path) != 0)
 	{
 		ft_putstr_fd("minishell: cd: ", 2);
-		perror(cmd[1]);
+		perror(path);
 		sh->exit_status = 1;
 	}
 	else
@@ -112,4 +74,10 @@ void	builtin_cd(char **cmd, t_shell *sh)
 		update_work_dirs(sh, old_pwd);
 		sh->exit_status = 0;
 	}
+}
+
+void	save_current_dir(t_shell *sh, char *buffer)
+{
+	if (getcwd(buffer, 4096) == NULL)
+		ft_strlcpy(buffer, get_env_value(sh->env_list, "PWD"), 4096);
 }
