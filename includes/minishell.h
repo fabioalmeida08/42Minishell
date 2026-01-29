@@ -207,4 +207,5 @@ int	cd_validate_args(char **cmd);
 void	update_work_dirs(t_shell *sh, char *old_pwd);
 void	change_home(t_shell *sh, char *old_pwd);
 void	change_old_dir(t_shell *sh, char *old_pwd);
+bool	ft_atoll_checked(const char *str, long long *out);
 #endif
