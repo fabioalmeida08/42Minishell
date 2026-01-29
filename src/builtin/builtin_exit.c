@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+#include <unistd.h>
 
 static void	exit_with_error(t_shell *sh, char *arg, char *msg, int status)
 {
@@ -29,7 +30,8 @@ void	builtin_exit(char **cmd, t_shell *sh)
 {
 	long long	exit_val;
 
-	if (sh->interactive)
+	if (sh->interactive && isatty(STDOUT_FILENO)
+		&& isatty(STDIN_FILENO))
 		ft_putendl_fd("exit", 1);
 	if (!cmd[1])
 	{

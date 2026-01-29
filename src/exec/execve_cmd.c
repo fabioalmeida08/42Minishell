@@ -49,7 +49,7 @@ static void	run_child_process(t_ast *ast, t_shell *sh)
 		free_all_structs(sh);
 		exit(1);
 	}
-	if (!ast->args || !ast->args[0] )
+	if (!ast->args || !ast->args[0])
 	{
 		free_all_structs(sh);
 		exit(0);
