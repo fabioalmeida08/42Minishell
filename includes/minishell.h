@@ -203,4 +203,8 @@ void	print_ast(t_ast *node, int depth);
 void	print_tokens(t_token *tokens);
 void	heredoc_sigint_handler(int sig);
 char	*expand_heredoc_line(char *line, t_shell *sh);
+int	cd_validate_args(char **cmd);
+void	update_work_dirs(t_shell *sh, char *old_pwd);
+void	change_home(t_shell *sh, char *old_pwd);
+void	change_old_dir(t_shell *sh, char *old_pwd);
 #endif
