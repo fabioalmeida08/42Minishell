@@ -50,7 +50,8 @@ bool	ft_atoll_checked(const char *str, long long *out)
 	while (str[i])
 	{
 		if (res > (9223372036854775807ULL / 10) || \
-			(res == (9223372036854775807ULL / 10) && (str[i] - '0') > 7 + (sign == -1)))
+			(res == (9223372036854775807ULL / 10)
+				&& (str[i] - '0') > 7 + (sign == -1)))
 			return (false);
 		res = res * 10 + (str[i++] - '0');
 	}
