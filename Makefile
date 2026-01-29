@@ -56,7 +56,8 @@ BUILTIN_SRC :=	builtin_utils.c \
 				builtin_cd.c \
 				builtin_echo.c \
 				builtin_exit.c \
-				builtin_export_utils.c
+				builtin_export_utils.c \
+				builtin_cd_utils.c
 
 DEBUGING_SRC := print_tokens.c \
 				print_ast.c
